@@ -7,7 +7,6 @@ const QuizContextProvider = (props) => {
   if (!quiz) {
     setQuiz(props.defaultQuiz || []);
   }
-  console.log(quiz);
   return (
     <QuizContext.Provider value={{ quiz, setQuiz }}>
       {props.children}
