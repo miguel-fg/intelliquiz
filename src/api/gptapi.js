@@ -6,7 +6,7 @@ const jsonTemplate =
 // function for generating prompt to generate the quiz
 function generateQuiz(numberQuestions, questionType, gptInput) {
   //return `generate ${numberQuestions} questions of type ${questionType} based on this text: ${gptInput}. Return answer as json like: ${jsonTemplate} replacing single quotes with double quotes`;
-  return `generate ${numberQuestions} questions of type ${questionType} based on this text: ${gptInput}. Return answer as json like: ${jsonTemplate} replacing single quotes with double quotes.  Provide a slight indication (or the primary cause) as a hint for each question and do not reveal the answer directly. Limit to 15 words. Also explain the answer to the question in not more than 50 words, do not refer to the text in any of the explanations and hints, you may use your database to explain. 
+  return `generate ${numberQuestions} questions of type ${questionType} based on this text: ${gptInput}. Return answer as json like: ${jsonTemplate} replacing single quotes with double quotes. IMPORTANT: DO NOT ADD triple back tick (\`) block identifier to the json, return the answer as plain text so that it can be parsed cleanly.  Provide a slight indication (or the primary cause) as a hint for each question and do not reveal the answer directly. Limit to 15 words. Also explain the answer to the question in not more than 50 words, do not refer to the text in any of the explanations and hints, you may use your database to explain. 
   (Refer to this example for hint:{ Question: What is the capital city of canada?;Hint: This city sits on the border of Ontario and Quebec.}, {Question: Canada shares its longest international land border with Mexico.; Hint: Look to the north for Canada's longest international land border.}`;
 }
 
@@ -21,13 +21,14 @@ function generateFeedback(wrongQuestions, rightQuestions) {
 
 //function to call chatgpt to generate quiz
 export const quizRequest = async (numberQuestions, questionType, gptInput) => {
+  console.log("[OPEN AI API] generating quiz...")
   const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_KEY;
 
   const prompt = generateQuiz(numberQuestions, questionType, gptInput);
 
   const data = {
-    model: "gpt-3.5-turbo",
-    messages: [{ role: "user", content: prompt }],
+    model: 'gpt-4o-mini',
+    messages: [{ role: 'user', content: prompt }],
   };
 
   try {
@@ -41,8 +42,7 @@ export const quizRequest = async (numberQuestions, questionType, gptInput) => {
         },
       }
     );
-    console.log(response.data.choices[0].message.content);
-    // setGptResponse(response.data.choices[0].message.content);
+    //console.log(response.data.choices[0].message.content);
     return response.data.choices[0].message.content;
   } catch (error) {
     console.error("Error: ", error);
@@ -51,6 +51,7 @@ export const quizRequest = async (numberQuestions, questionType, gptInput) => {
 
 //function to call chatgpt to generate feedback
 export const feedbackRequest = async (wrongQuestions, rightQuestions) => {
+  console.log('[OPEN AI API] generating quiz feedback...');
   const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_KEY;
 
   const prompt = generateFeedback(wrongQuestions, rightQuestions);
@@ -71,8 +72,7 @@ export const feedbackRequest = async (wrongQuestions, rightQuestions) => {
         },
       }
     );
-    console.log(response.data.choices[0].message.content);
-    // setGptResponse(response.data.choices[0].message.content);
+    //console.log(response.data.choices[0].message.content);
     return response.data.choices[0].message.content;
   } catch (error) {
     console.error("Error: ", error);

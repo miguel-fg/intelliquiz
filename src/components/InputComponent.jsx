@@ -40,9 +40,7 @@ function InputComponent() {
 
   const gptCallResponse = async () => {
     setQuiz(["loading"]);
-    console.log(gptInput);
     const res = await quizRequest(numberQuestions, questionType, gptInput);
-    console.log(res);
     let jres;
     if (typeof res === "string") {
       jres = JSON.parse(res);
@@ -65,7 +63,6 @@ function InputComponent() {
 
   function getQuiz() {
     gptCallResponse();
-    console.log("submitted Quiz");
   }
 
   function attemptQuiz() {
@@ -80,9 +77,9 @@ function InputComponent() {
       let templatePath = "";
 
       if(questionType === "multiple choice"){
-        templatePath = ansCheckbox ? "/CPSC-2350-Project/templates/quiz-mcq-wa-template.docx" : "/CPSC-2350-Project/templates/quiz-mcq-na-template.docx"
+        templatePath = ansCheckbox ? "/intelliquiz/templates/quiz-mcq-wa-template.docx" : "/intelliquiz/templates/quiz-mcq-na-template.docx"
       } else if(questionType === "true/false") {
-        templatePath = ansCheckbox ? "/CPSC-2350-Project/templates/quiz-tf-wa-template.docx" : "/CPSC-2350-Project/templates/quiz-tf-na-template.docx"
+        templatePath = ansCheckbox ? "/intelliquiz/templates/quiz-tf-wa-template.docx" : "/intelliquiz/templates/quiz-tf-na-template.docx"
       }
 
       if (pwdCheckbox && pwd) {
