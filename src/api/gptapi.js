@@ -57,8 +57,8 @@ export const feedbackRequest = async (wrongQuestions, rightQuestions) => {
   const prompt = generateFeedback(wrongQuestions, rightQuestions);
 
   const data = {
-    model: "gpt-3.5-turbo",
-    messages: [{ role: "user", content: prompt }],
+    model: 'gpt-4o-mini',
+    messages: [{ role: 'user', content: prompt }],
   };
 
   try {
