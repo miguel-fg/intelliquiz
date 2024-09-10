@@ -1,9 +1,10 @@
 import { useContext, useState, useRef } from "react";
 import { quizRequest } from "../api/gptapi";
-import { extractText, downloadQuiz } from "../api/pdfapi";
+import { extractText, downloadQuiz, uploadFile } from "../api/pdfapi";
 import { QuizContext } from "../context/QuizContext";
 import Divider from "../components/Divider";
 import LoadingSpinner from "../components/LoadingSpinner";
+import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
 
@@ -55,8 +56,25 @@ function InputComponent() {
     console.log(fileValue);
     const extract = async () => {
       setGptInput("loading....");
-      const res = await extractText(fileValue);
-      setGptInput(res);
+      const apiURI = 'http://localhost:3000/pdf/extract';
+      const token = localStorage.getItem('accessToken');
+      const formData = new FormData();
+
+      formData.append('token', token);
+      formData.append('file', fileValue);
+      
+      try {
+        const response = await axios.post(apiURI, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        
+        setGptInput(response.data.text);
+      } catch (error) {
+        console.log('Failed to extract text. ', error);
+        setGptInput('');
+      }
     };
     extract();
   }

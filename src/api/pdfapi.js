@@ -60,7 +60,7 @@ const generatePresignedURI = async (token, type) => {
 };
 
 // upload file to presignedURI
-const uploadFile = async (file, uploadURI, type) => {
+export const uploadFile = async (file, uploadURI, type) => {
   console.log('[Adobe PDF API] uploading to presigned URI...');
 
   const contentType =
@@ -133,7 +133,7 @@ const startExtractJob = async (token, assetID) => {
 };
 
 // decompress and return data
-const downloadData = async (downloadURI) => {
+export const downloadData = async (downloadURI) => {
   console.log('[Adobe PDF API] downloading...');
 
   try {
@@ -274,7 +274,7 @@ const startDocGeneration = async (token, assetID, jsonData) => {
   }
 };
 
-const downloadPDF = async (downloadURI) => {
+export const downloadPDF = async (downloadURI) => {
   try {
     const response = await axios.get(downloadURI, {
       responseType: 'blob',
