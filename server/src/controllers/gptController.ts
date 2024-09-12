@@ -7,6 +7,7 @@ const OPENAI_API_KEY = process.env.OPENAI_KEY;
 
 // quiz generation
 const quizController = async (c: Context) => {
+  console.log('Generating quiz...');
   const { numQuestions, questionType, textInput } = await c.req.json();
   const apiURI = 'https://api.openai.com/v1/chat/completions';
 
@@ -39,6 +40,7 @@ const quizController = async (c: Context) => {
 
 // feedback generation
 const feedbackController = async (c: Context) => {
+  console.log('Generating feedback...');
   const { wrongQuestions, rightQuestions } = await c.req.json();
   const apiURI = 'https://api.openai.com/v1/chat/completions';
 

@@ -1,5 +1,4 @@
 import { JSONObject } from "hono/utils/types";
-import { json } from "stream/consumers";
 
 const jsonTemplate = `
 {
@@ -43,7 +42,7 @@ const validateJsonFormat = (jsonString: string) => {
   try {
     return {
       validJson: true,
-      data: JSON.parse(jsonString)
+      quiz: JSON.parse(jsonString)
     };
   } catch (error: any) {
     return {

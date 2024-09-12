@@ -7,6 +7,10 @@ import {
   uploadFile,
   startExtractJob,
   downloadDocText,
+  quizDataBuilder,
+  retrieveDocxTemplate,
+  startGenerationJob,
+  encryptPDF
 } from '../services/pdfService';
 
 const PDF_CLIENT_ID = process.env.PDF_CLIENT_ID;
@@ -56,6 +60,34 @@ const extractController = async (c: Context) => {
   }
 };
 
-const createController = async (c: Context) => {};
+const generateController = async (c: Context) => {
+  const { token, quizData, templateID, pwd, report } = await c.req.json();
+  const FILETYPE = 'docx';
 
-export { authController, extractController, createController };
+  const template = await retrieveDocxTemplate(templateID);
+  
+  const jsonData = report ? quizData : await quizDataBuilder(quizData);
+  
+  if(token && template){
+      const { uploadUri, assetID } = await generatePresignedURI(token, FILETYPE);
+
+      const uploadSuccessful = await uploadFile(template, uploadUri, FILETYPE);
+
+      if(uploadSuccessful){
+        const downloadUri = await startGenerationJob(token, assetID, jsonData);
+
+        if(pwd) {
+          const encryptedPDFUri = await encryptPDF(token, downloadUri, pwd);
+          return c.json({encryptedPDFUri});
+        } else {
+          return c.json({downloadUri});
+        }
+      } else {
+        return c.json({error: 'Failed to upload the template.'})
+      }
+  } else {
+    return c.json({error: 'Invalid token or template'});
+  }
+};
+
+export { authController, extractController, generateController };

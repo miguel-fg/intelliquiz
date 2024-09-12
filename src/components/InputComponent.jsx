@@ -1,6 +1,5 @@
 import { useContext, useState, useRef } from "react";
-import { quizRequest } from "../api/gptapi";
-import { extractText, downloadQuiz, uploadFile } from "../api/pdfapi";
+import { downloadPDF } from "../scripts/pdfHelper";
 import { QuizContext } from "../context/QuizContext";
 import Divider from "../components/Divider";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -41,15 +40,30 @@ function InputComponent() {
 
   const gptCallResponse = async () => {
     setQuiz(["loading"]);
-    const res = await quizRequest(numberQuestions, questionType, gptInput);
-    let jres;
-    if (typeof res === "string") {
-      jres = JSON.parse(res);
-    } else {
-      jres = res;
+    const apiURI = 'http://localhost:3000/gpt/quiz';
+
+    const data = {
+      numQuestions: numberQuestions,
+      questionType: questionType,
+      textInput: gptInput
     }
-    console.log(jres.questions);
-    setQuiz(jres.questions);
+
+    try {
+      const response = await axios.post(apiURI, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if(response.data.validJson){
+        setQuiz(response.data.quiz.questions);
+      } else {
+        setQuiz(["error"]);
+        console.log(response.data);
+        throw new Error("GPT returned invalid JSON format")
+      }
+    } catch (error) {
+      console.log("Failed to fetch quiz. ", error);
+    }
   };
   function gettingFileValue() {
     const fileValue = fileInputRef.current.files[0];
@@ -86,32 +100,53 @@ function InputComponent() {
   function attemptQuiz() {
     navigate("/attempt");
   }
-  //download function
+ 
   function downloadPdf() {
     setDownloadLoading(true);
 
     const download = async () => {
-      let status = "in progress";
-      let templatePath = "";
+      const apiURI = 'http://localhost:3000/pdf/generate';
+      const token = localStorage.getItem('accessToken');
+      let templateType = "";
 
       if(questionType === "multiple choice"){
-        templatePath = ansCheckbox ? "/intelliquiz/templates/quiz-mcq-wa-template.docx" : "/intelliquiz/templates/quiz-mcq-na-template.docx"
+        templateType = ansCheckbox ? "mcq-wa" : "mcq-na"
       } else if(questionType === "true/false") {
-        templatePath = ansCheckbox ? "/intelliquiz/templates/quiz-tf-wa-template.docx" : "/intelliquiz/templates/quiz-tf-na-template.docx"
+        templateType = ansCheckbox ? "tf-wa" : "tf-na"
       }
 
-      if (pwdCheckbox && pwd) {
-        status = await downloadQuiz(quiz, templatePath, pwd);
-      } else {
-        status = await downloadQuiz(quiz, templatePath);
+      const reqData = {
+        token: token,
+        quizData: quiz,
+        templateID: templateType,
+        pwd: pwdCheckbox ? pwd : null,
+        report: false
       }
 
-      if (status === "done") {
+      try {
+        const response = await axios.post(apiURI, reqData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if(response.data.downloadUri){
+          await downloadPDF(response.data.downloadUri);
+        } else if (response.data.encryptedPDFUri){
+          await downloadPDF(response.data.encryptedPDFUri);
+        } else {
+          throw new Error('Invalid response from Intelliquiz Server');
+        }
+
+      } catch (error) {
+        console.log("Failed to generate PDF document. ", error);
+      } finally {
         setDownloadLoading(false);
         setPwdCheckbox(false);
         setAnsCheckbox(false);
         setPwd("");
       }
+
     };
 
     download();
