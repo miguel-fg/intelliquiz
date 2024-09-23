@@ -5,7 +5,10 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.12.2",
-    "hono": "^4.5.11"
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "hono": "^4.5.11",
+    "jszip": "^3.10.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",

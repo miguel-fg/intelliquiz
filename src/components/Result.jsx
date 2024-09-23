@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { QuizContext } from "../context/QuizContext";
-import { feedbackRequest } from "../api/gptapi";
 import { useNavigate } from "react-router-dom";
 import Divider from "./Divider";
 import LoadingSpinner from "./LoadingSpinner";
-import { downloadQuiz } from "../api/pdfapi";
+import { downloadPDF } from "../scripts/pdfHelper";
 import logo from "../components/images/logo.png";
+import axios from "axios";
 
 function Result() {
   const { quiz } = useContext(QuizContext);
@@ -37,14 +37,34 @@ function Result() {
   const getFeedback = async () => {
     const wrongQuestions = quiz.filter((q) => q.answer !== q.userResponse);
     const rightQuestions = quiz.filter((q) => q.answer === q.userResponse);
-    const feedback = await feedbackRequest(wrongQuestions, rightQuestions);
-    setFeedback(feedback);
+    const apiURI = 'http://localhost:3000/gpt/feedback';
+
+    const data = {
+      wrongQuestions: wrongQuestions,
+      rightQuestions: rightQuestions
+    }
+
+    try {
+      const response = await axios.post(apiURI, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const feedback = response.data;
+      setFeedback(feedback);
+    } catch (error) {
+
+    }
   };
 
-  const generateReportJson = () => {    
-    let status = "in progress";
+  const downloadReport = async () => {
+    const apiURI = 'http://localhost:3000/pdf/generate';  
+    const token = localStorage.getItem('accessToken');  
+    const template = 'report';
     setLoadingReport(true);
-    const report = {
+
+    const quizData = {
       score: `${getScore()} / ${quiz.length}`,
       questions: quiz.map((q) => ({
         question: q.question,
@@ -56,18 +76,31 @@ function Result() {
       feedback: feedback,
     };
 
-    const template = "/CPSC-2350-Project/templates/report-template.docx";
+    const reqData = {
+      token: token,
+      quizData: quizData,
+      templateID: template,
+      pwd: null,
+      report: true
+    }
 
-    const downloadReport = async (report, template) => {
-      
-      status = await downloadQuiz(report, template, false, true);
+    try {
+      const response = await axios.post(apiURI, reqData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
-      if (status === "done"){
-        setLoadingReport(false);
+      if(response.data.downloadUri){
+        await downloadPDF(response.data.downloadUri);
+      } else {
+        throw new Error('Invalid response from Intelliquiz Server');
       }
-    };
-
-    downloadReport(report, template);
+    } catch (error) {
+      console.log("Failed to generate PDF report. ", error);
+    } finally {
+      setLoadingReport(false);
+    }
   };
 
   return (
@@ -87,7 +120,7 @@ function Result() {
         </button>
         <button
           className="text-dPurple bg-magnolia inner-border-3 inner-border-amethyst text-center px-2 py-1 text-button rounded-md drop-shadow-lg enabled:hover:bg-thistle enabled:hover:inner-border-thistle disabled:opacity-70"
-          onClick={generateReportJson}
+          onClick={downloadReport}
           disabled={feedback === ""}
         >
           Download Report{" "}
@@ -129,7 +162,7 @@ function Result() {
       <button
         className="text-dPurple bg-magnolia inner-border-3 inner-border-amethyst text-center px-2 py-1 text-button rounded-md drop-shadow-lg enabled:hover:bg-thistle enabled:hover:inner-border-thistle disabled:opacity-70 my-6"
         disabled={feedback === ""}
-        onClick={generateReportJson}
+        onClick={downloadReport}
         data-testid="download-report-button"
       >
         Download Report

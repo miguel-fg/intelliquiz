@@ -1,16 +1,25 @@
-import { serve } from '@hono/node-server'
-import { Hono } from 'hono'
+import { serve } from '@hono/node-server';
+import { Hono } from 'hono';
+import { logger } from 'hono/logger';
+import { cors } from 'hono/cors';
+import gptRoutes from './routes/gptRoutes';
+import pdfRoutes from './routes/pdfRoutes';
 
-const app = new Hono()
+const app = new Hono();
+app.use(logger());
+app.use('/*', cors());
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+// OPEN AI API requests
+app.route('/gpt', gptRoutes);
 
-const port = 3000
-console.log(`Server is running on port ${port}`)
+// Adobe PDF Services API requests
+app.route('/pdf', pdfRoutes);
+
+const port = Number(process.env.PORT) || 4000;
+
+console.log(`Intelliquiz server is running on port ${port}`);
 
 serve({
   fetch: app.fetch,
-  port
-})
+  port,
+});

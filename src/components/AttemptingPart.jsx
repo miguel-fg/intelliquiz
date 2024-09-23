@@ -60,7 +60,6 @@ export default function AttemptingPart({ question, passValue, index }) {
 // FlipCard Component
 function FlipCard({ text, backText }) {
   const [isFlipped, setIsFlipped] = useState(false);
-  console.log(text);
   function handleClick() {
     setIsFlipped(!isFlipped);
   }
