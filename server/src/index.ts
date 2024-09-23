@@ -15,7 +15,8 @@ app.route('/gpt', gptRoutes);
 // Adobe PDF Services API requests
 app.route('/pdf', pdfRoutes);
 
-const port = 3000;
+const port = Number(process.env.PORT) || 4000;
+
 console.log(`Intelliquiz server is running on port ${port}`);
 
 serve({
