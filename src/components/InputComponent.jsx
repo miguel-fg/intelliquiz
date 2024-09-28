@@ -3,7 +3,7 @@ import { downloadPDF } from "../scripts/pdfHelper";
 import { QuizContext } from "../context/QuizContext";
 import Divider from "../components/Divider";
 import LoadingSpinner from "../components/LoadingSpinner";
-import axios from "axios";
+import api from "../scripts/axiosInstance";
 
 import { useNavigate } from "react-router-dom";
 
@@ -40,7 +40,6 @@ function InputComponent() {
 
   const gptCallResponse = async () => {
     setQuiz(["loading"]);
-    const apiURI = 'http://localhost:3000/gpt/quiz';
 
     const data = {
       numQuestions: numberQuestions,
@@ -49,7 +48,7 @@ function InputComponent() {
     }
 
     try {
-      const response = await axios.post(apiURI, data, {
+      const response = await api.post('/gpt/quiz', data, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -70,7 +69,6 @@ function InputComponent() {
     console.log(fileValue);
     const extract = async () => {
       setGptInput("loading....");
-      const apiURI = 'http://localhost:3000/pdf/extract';
       const token = localStorage.getItem('accessToken');
       const formData = new FormData();
 
@@ -78,7 +76,7 @@ function InputComponent() {
       formData.append('file', fileValue);
       
       try {
-        const response = await axios.post(apiURI, formData, {
+        const response = await api.post('/pdf/extract', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -105,7 +103,6 @@ function InputComponent() {
     setDownloadLoading(true);
 
     const download = async () => {
-      const apiURI = 'http://localhost:3000/pdf/generate';
       const token = localStorage.getItem('accessToken');
       let templateType = "";
 
@@ -124,7 +121,7 @@ function InputComponent() {
       }
 
       try {
-        const response = await axios.post(apiURI, reqData, {
+        const response = await api.post('/pdf/generate', reqData, {
           headers: {
             'Content-Type': 'application/json'
           }

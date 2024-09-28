@@ -4,18 +4,18 @@ import Result from '../components/Result';
 import { Route, Routes } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Divider from '../components/Divider';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../scripts/axiosInstance';
 
 function Home() {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(null);
 
   const fetchNewToken = async () => {
-    const apiURI = 'http://localhost:3000/pdf/auth';
     try {
-      const response = await axios.get(apiURI);
+      const response = await api.get('/pdf/auth');
 
       const { access_token, expires_in } = response.data;
       const currentTime = new Date().getTime();
@@ -51,7 +51,12 @@ function Home() {
   }, []);
 
   if (loading) {
-    return null;
+    return (
+      <div className='w-8/12 justify-center items-center'>
+        <LoadingSpinner />
+        <h1 className='text-header text-dPurple mb-5'>Loading...</h1>
+      </div>
+    );
   }
 
   return (

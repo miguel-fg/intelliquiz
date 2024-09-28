@@ -5,7 +5,7 @@ import Divider from "./Divider";
 import LoadingSpinner from "./LoadingSpinner";
 import { downloadPDF } from "../scripts/pdfHelper";
 import logo from "../components/images/logo.png";
-import axios from "axios";
+import api from "../scripts/axiosInstance";
 
 function Result() {
   const { quiz } = useContext(QuizContext);
@@ -37,7 +37,6 @@ function Result() {
   const getFeedback = async () => {
     const wrongQuestions = quiz.filter((q) => q.answer !== q.userResponse);
     const rightQuestions = quiz.filter((q) => q.answer === q.userResponse);
-    const apiURI = 'http://localhost:3000/gpt/feedback';
 
     const data = {
       wrongQuestions: wrongQuestions,
@@ -45,7 +44,7 @@ function Result() {
     }
 
     try {
-      const response = await axios.post(apiURI, data, {
+      const response = await api.post('/gpt/feedback', data, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -58,8 +57,7 @@ function Result() {
     }
   };
 
-  const downloadReport = async () => {
-    const apiURI = 'http://localhost:3000/pdf/generate';  
+  const downloadReport = async () => {  
     const token = localStorage.getItem('accessToken');  
     const template = 'report';
     setLoadingReport(true);
@@ -85,7 +83,7 @@ function Result() {
     }
 
     try {
-      const response = await axios.post(apiURI, reqData, {
+      const response = await api.post('/pdf/generate', reqData, {
         headers: {
           'Content-Type': 'application/json'
         }
