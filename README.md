@@ -15,7 +15,7 @@ This project aims to offer customizable AI-generated quizzes from direct text in
 ### [-> Try out the site <-](https://miguel-fg.github.io/intelliquiz/)
 
 ## 🏠 Running IntelliQuiz locally
-Intelliquiz is a [monorepo](https://en.wikipedia.org/wiki/Monorepo) the client of the application is located in 
+Intelliquiz is a [monorepo](https://en.wikipedia.org/wiki/Monorepo). The client of the application is located in the root `./` directory and the server-side application is in the `./server` folder.  
 
 ### Prerequisites
 * `Node.js` version 18 or above
@@ -58,6 +58,7 @@ Intelliquiz is a [monorepo](https://en.wikipedia.org/wiki/Monorepo) the client o
      ``` bash
      VITE_DEPLOYED_BASE_URL=https://your-deployed-backend-url.com
      ```
+     Make sure to change the value of `VITE_USE_DEPLOYED_BASE` to `true` if testing a deployed server.  
    * **Server**
 
      In the `./server` directory, create another `.env` file with the following variables:
