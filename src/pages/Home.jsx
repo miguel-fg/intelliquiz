@@ -49,18 +49,19 @@ function Home() {
       fetchNewToken().finally(() => setLoading(false));
     }
   }, []);
-
+  
   if (loading) {
     return (
-      <div className='w-8/12 justify-center items-center'>
+      <div className='flex flex-col w-11/12 lg:w-8/12 h-screen justify-center items-center'>
         <LoadingSpinner />
-        <h1 className='text-header text-dPurple mb-5'>Loading...</h1>
+        <h1 className='text-header font-oswald text-dPurple mb-5'>Loading...</h1>
+        <h1 className='text-button font-oswald text-dPurple text-balance'>This might take some time while the server wakes up.</h1>
       </div>
     );
   }
 
   return (
-    <div className='px-10 py-2 font-oswald w-8/12 grid grid-cols-12'>
+    <div className='px-10 py-2 font-oswald w-11/12 lg:w-8/12 grid grid-cols-12'>
       <Navbar />
       <Divider />
       <Routes>

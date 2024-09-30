@@ -85,7 +85,7 @@ function QuizComponent() {
         {currentQuestionIndex > 0 && missing == -1 && (
           <button
             type="button"
-            className="text-dPurple bg-magnolia inner-border-3 inner-border-amethyst text-center w-150 py-1 text-button rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple hover:inner-border-thistle"
+            className="text-dPurple bg-magnolia inner-border-3 inner-border-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple hover:inner-border-thistle"
             onClick={backPage}
           >
             Back
@@ -94,7 +94,7 @@ function QuizComponent() {
         {currentQuestionIndex < quizMaterial.length - 1 && (
           <button
             type="button"
-            className="text-seasalt bg-amethyst text-center w-150 py-1 text-button rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple"
+            className="text-seasalt bg-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple"
             onClick={nextPage}
           >
             Next
@@ -107,7 +107,7 @@ function QuizComponent() {
             <button
               type="button"
               onClick={submit}
-              className="text-seasalt bg-iqRed text-center w-150 py-1 text-button rounded-md drop-shadow-lg hover:bg-iqLightRed hover:text-dPurple"
+              className="text-seasalt bg-iqRed text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-iqLightRed hover:text-dPurple"
             >
               Submit
             </button>
@@ -118,14 +118,14 @@ function QuizComponent() {
               <button
                 type="button"
                 onClick={submitAnyways}
-                className="text-seasalt bg-iqRed text-center w-150 py-1 text-button rounded-md drop-shadow-lg hover:bg-iqLightRed hover:text-dPurple"
+                className="text-seasalt bg-iqRed text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-iqLightRed hover:text-dPurple"
               >
                 Submit Anyways
               </button>
               <button
                 type="button"
                 onClick={goBack}
-                className="text-seasalt bg-amethyst text-center w-150 py-1 text-button rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple"
+                className="text-seasalt bg-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple"
               >
                 Back to Quiz
               </button>
