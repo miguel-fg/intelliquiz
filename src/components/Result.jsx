@@ -105,19 +105,19 @@ function Result() {
     <div className="col-span-12">
       <h1 className="text-4xl text-dPurple mb-6">
         Your Score{" "}
-        <span className="text-amethyst">
+        <span className="text-amethyst text-nowrap">
           {getScore()} / {quiz.length}
         </span>
       </h1>
-      <div className="flex gap-4 mb-10">
+      <div className="flex gap-4 mb-10 flex-wrap">
         <button
-          className="text-seasalt bg-amethyst text-center w-150 py-1 text-button rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple"
+          className="text-seasalt bg-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple"
           onClick={homePage}
         >
           Home Page
         </button>
         <button
-          className="text-dPurple bg-magnolia inner-border-3 inner-border-amethyst text-center px-2 py-1 text-button rounded-md drop-shadow-lg enabled:hover:bg-thistle enabled:hover:inner-border-thistle disabled:opacity-70"
+          className="text-dPurple bg-magnolia inner-border-3 inner-border-amethyst text-center px-2 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg enabled:hover:bg-thistle enabled:hover:inner-border-thistle disabled:opacity-70"
           onClick={downloadReport}
           disabled={feedback === ""}
         >
@@ -125,7 +125,7 @@ function Result() {
         </button>
         {isLoadingReport ? (<div className="flex gap-2">
           <img src={logo} alt="Intelliquiz logo" className="w-12 h-12 animate-fade-in-out"/>
-          <h1 className="text-dPurple text-button">Loading...</h1>  
+          <h1 className="text-dPurple md:text-button text-button-mb">Loading...</h1>  
         </div>) : (<></>)}
       </div>
       <Divider />
@@ -135,30 +135,30 @@ function Result() {
         ))}
       </div>
       <Divider />
-      <h1 className="text-header text-dPurple mb-3">Feedback</h1>
+      <h1 className="text-header-mb mb:text-header text-dPurple mb-3">Feedback</h1>
 
       <div className="feedback-section my-4">
         {feedback == "" ? (
           <div>
-            <h1 className="text-header text-dPurple mb-5">Loading...</h1>
+            <h1 className="text-header-mb mb:text-header text-dPurple mb-5">Loading...</h1>
             <LoadingSpinner />
           </div>
         ) : (
-          <p className="text-dPurple bg-seasalt inner-border-3 inner-border-thistle rounded-md p-2">
+          <p className="text-dPurple font-garamond bg-seasalt inner-border-3 inner-border-thistle rounded-md p-2">
             {feedback}
           </p>
         )}
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-wrap pb-6">
       <button
         type="button"
-        className="text-seasalt bg-amethyst text-center w-150 py-1 text-button rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple my-6"
+        className="text-seasalt bg-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple md:my-6"
         onClick={homePage}
       >
         Home Page
       </button>
       <button
-        className="text-dPurple bg-magnolia inner-border-3 inner-border-amethyst text-center px-2 py-1 text-button rounded-md drop-shadow-lg enabled:hover:bg-thistle enabled:hover:inner-border-thistle disabled:opacity-70 my-6"
+        className="text-dPurple bg-magnolia inner-border-3 inner-border-amethyst text-center px-2 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg enabled:hover:bg-thistle enabled:hover:inner-border-thistle disabled:opacity-70 md:my-6"
         disabled={feedback === ""}
         onClick={downloadReport}
         data-testid="download-report-button"
@@ -178,7 +178,7 @@ export const DisplayQuiz = ({ data, index }) => {
   return (
     <div className="mb-10">
       <div>
-        <p className="text-button text-dPurple mb-3">
+        <p className="text-button-mb md:text-button text-dPurple mb-3">
           {index}. {data.question}
         </p>
       </div>
@@ -204,7 +204,7 @@ export const DisplayQuiz = ({ data, index }) => {
             {value == data.answer && value == data.userResponse ? (
               ""
             ) : data.answer == value ? (
-              <p>{data.explanation}</p>
+              <p className="text-body text-dPurple font-garamond">{data.explanation}</p>
             ) : (
               ""
             )}

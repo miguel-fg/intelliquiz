@@ -7,6 +7,7 @@ module.exports = {
         oswald: ["Oswald", "sans-serif"],
       },
       width: {
+        50: "50px",
         70: "70px",
         100: "100px",
         150: "150px",
@@ -68,7 +69,10 @@ module.exports = {
       fontSize: {
         header: ["2rem"],
         button: ["1.5rem"],
-        body: ["1rem"]
+        body: ["1rem"],
+        "header-mb": ["1.5rem"],
+        "button-mb": ["1.25rem"],
+        "body-mb": ["0.75rem"],
       },
       borderWidth: {
         3: "3px"

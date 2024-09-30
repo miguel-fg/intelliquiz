@@ -27,14 +27,14 @@ export default function AttemptingPart({ question, passValue, index }) {
 
   return (
     <div className="w-full">
-      <h1 className="text-header text-dPurple mb-3">
+      <h1 className="text-header-mb md:text-header text-dPurple mb-3">
         {index + 1}. {question.question}
       </h1>
       <div className="grid grid-cols-2 gap-4 w-full">
         {question.options.map((option, idx) => (
           <div
             key={idx}
-            className={`text-center text-button py-10 w-full justify-start cursor-pointer rounded-lg drop-shadow-lg ${
+            className={`text-center text-button-mb md:text-button py-10 w-full justify-start cursor-pointer rounded-lg drop-shadow-lg ${
               option == selectedValue
                 ? `inner-border-3 inner-border-amethyst text-seasalt ${selectedColors[idx]}`
                 : colors[idx]
@@ -69,14 +69,14 @@ function FlipCard({ text, backText }) {
       <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical ">
         <div
           onClick={handleClick}
-          className="py-10 bg-thistle w-full text-center text-button rounded-lg cursor-pointer"
+          className="py-10 bg-thistle w-full text-center md:text-button text-button-mb rounded-lg cursor-pointer"
         >
           {text}
         </div>
 
         <div
           onClick={handleClick}
-          className="py-10 bg-magnolia inner-border-3 inner-border-amethyst text-center w-full text-button font-garamond rounded-lg cursor-pointer"
+          className="py-10 bg-magnolia inner-border-3 inner-border-amethyst text-center w-full md:text-button text-button-mb font-garamond rounded-lg cursor-pointer"
         >
           {backText}
         </div>

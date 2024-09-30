@@ -7,7 +7,7 @@ function Navbar() {
         <img
           src={brand}
           alt="Intelliquiz Logo"
-          className="w-300"
+          className="w-150 md:w-300"
         />
       </div>
   );
