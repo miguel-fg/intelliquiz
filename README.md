@@ -10,58 +10,103 @@ IntelliQuiz - An AI-Powered Quiz Maker App
 ## 🗺️ Overview
 IntelliQuiz is designed for students who wish to streamline study sessions and instructors who want to simplify quiz creation for their classes. 
 
-This project aims to offer customizable Ai-generated quizzes from text inputs or PDF documents. The quizzes are interactive and provide "Hint" buttons; they can be attempted directly in the application or can be downloaded as PDF files. Quiz results provide feedback and highlights areas needing further review. The final summary and results can also be downloaded as a report PDF.
+This project aims to offer customizable AI-generated quizzes from direct text inputs or PDF documents. The quizzes are interactive and provide "Hint" buttons; they can be attempted directly in the application or can be downloaded as PDF files. Quiz results provide feedback and highlights areas needing further review. The final summary and results can also be downloaded as a report PDF.
 
-### [-> Try out the site <-](https://pfang12.github.io/CPSC-2350-Project/)
-
-### [-> Watch the demo <-](https://drive.google.com/file/d/1wUgf49-GWlcw_Q-dyJCF3bjznb9zp2-I/view)
-
-**NOTE:** The report and presentation can be found under the `./reports` and `./presentations` directories of this repository.
+### [-> Try out the site <-](https://miguel-fg.github.io/intelliquiz/)
 
 ## 🏠 Running IntelliQuiz locally
+Intelliquiz is a [monorepo](https://en.wikipedia.org/wiki/Monorepo) the client of the application is located in 
 
 ### Prerequisites
 * `Node.js` version 18 or above
-*  `npm` package manager
 
-### Instructions
-1. Clone this repository
-   ```bash
-   git clone https://github.com/pfang12/CPSC-2350-Project.git
+### Steps to Run Locally
+
+1. **Clone the repository**
+   
+   Clone the IntelliQuiz repository from GitHub to your local machine:
+   ``` bash
+   git clone https://github.com/miguel-fg/intelliquiz.git
    ```
-2. Move into the application folder of the repo
-   ```bash
-   cd CPSC-2350-Project
-   cd App
-   ```
-3. Install the node dependencies
-   ```bash
-   npm install
-   ```
-4. Add this **[.env file](https://drive.google.com/file/d/1qU4Bzm2J2MNSfmSJ0Dp8YTSdd_iUZPQn/view)** to the `App` directory (root directory of the application, not the repository)
-   - Make sure the file contains three API keys:
-     1. `VITE_OPENAI_KEY`
-     2. `VITE_PDF_CLIENT_ID`
-     3. `VITE_PDF_CLIENT_SECRET` 
-   - **IMPORTANT:** this file link represents a security risk for our application. As soon as marking is complete, the API keys will be deactivated and the link will be removed.
-5. To run the application, use the following command inside the `App` directory
-   ```bash
-   npm run dev
-   ```
-   - This should open a local development server at `http://localhost:5173/CPSC-2350-Project` (the port number might change)
+2. **Install dependencies**
+
+   Both the client and the server require installing Node.js dependencies:
+
+   * Navigate to the root folder (client) and run `npm install`:
+      ``` bash
+      cd intelliquiz
+      npm install
+      ```
+
+   * Then, navigate to the `./server` folder and run the same command:
+     ``` bash
+     cd server
+     npm install
+     ```
+3. **Configure environment variables**
+
+   * **Client**
      
-6. To run both the unit and integration tests, run the following command inside the `App` directory
-   ```bash
-   npm run test
-   ```
+     In the root of the directory, create a `.env` file with the following variables:
+     ``` bash
+     VITE_USE_DEPLOYED_BASE=false
+     VITE_LOCAL_BASE_URL=http://localhost:4000
+     ```
+     These variables allow you to specify whether you want to use the local server or a deployed server for your API calls. The default setup assumes you'll be using the local server at `localhost:4000`.
+
+     If you're deploying your own backend, you can add this additional variable to specify the deployed backend URL:
+     ``` bash
+     VITE_DEPLOYED_BASE_URL=https://your-deployed-backend-url.com
+     ```
+   * **Server**
+
+     In the `./server` directory, create another `.env` file with the following variables:
+     ``` bash
+     OPENAI_KEY=your-openai-api-key
+     PDF_CLIENT_ID=your-adobe-pdf-client-id
+     PDF_CLIENT_SECRET=your-adobe-pdf-client-secret
+     ```
+
+     You'll need to obtain your own API keys from [OpenAI](https://platform.openai.com/) and [Adobe PDF Services](https://developer.adobe.com/document-services/).
+
+4. **Run the applications**
+
+   With the `.env` files in place and the dependencies installed, you can run both the client and server concurrently.
+
+   * Open two terminals:
+
+     * In the first terminal, navigate to the `./server` directory of the repository and run the server:
+       ``` bash
+       npm run dev
+       ```
+     * In the second terminal, navigate to the root directory `./` of the repository and run the client:
+       ``` bash
+       npm run dev
+       ```
+   The client will run on `http:localhost:5173` and the server on `http://localhost:4000`. You can adjust the ports in the `./.env` file or `./vite.config.js` file if necessary.
    
 ## 🧰 Tech Stack
 IntelliQuiz was built using:
 
-* Frontend React + Tailwind CSS
-* APIs: OpenAI, Adobe PDF Services
-* Testing: Vitest
-* Deployment: GitHub Pages
+### Frontend 
+* React
+* Node.js
+* Vite
+* Tailwind CSS
+* JavaScript (ES6)
+
+### Backend
+* Hono
+* Node.js
+* TypeScript
+
+### External APIs
+* Open AI
+* Adobe PDF Services
+
+### Deployment
+* GitHub Pages (client)
+* Render (server)
 
 ## 🧑‍💻 Authors
 * Harpreet Singh
