@@ -5,7 +5,7 @@
 IntelliQuiz - An AI-Powered Quiz Maker App
 </h1>
 
-![Application quiz page example](https://github.com/pfang12/CPSC-2350-Project/assets/72409412/fc61b89a-c2ee-456e-bee9-9514bf8a315c)
+<img width="1440" height="1024" alt="intelliquiz" src="https://github.com/user-attachments/assets/c6a94643-5ffd-472a-b614-52469f0ac9a7" />
 
 ## 🗺️ Overview
 IntelliQuiz is designed for students who wish to streamline study sessions and instructors who want to simplify quiz creation for their classes. 
