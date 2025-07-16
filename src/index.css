@@ -74,25 +74,25 @@
   .title-font {
     font-family: var(--font-oswald);
     font-weight: 400;
-    size: 3rem;
+    font-size: 3rem;
   }
 
   .heading-font {
     font-family: var(--font-oswald);
     font-weight: 400;
-    size: 1.5rem;
+    font-size: 1.5rem;
   }
 
   .button-font {
     font-family: var(--font-oswald);
     font-weight: 400;
-    size: 1rem;
+    font-size: 1rem;
   }
 
   .body-font {
     font-family: var(--font-open-sans);
     font-weight: 400;
-    size: 1rem;
+    font-size: 1rem;
   }
 }
 
