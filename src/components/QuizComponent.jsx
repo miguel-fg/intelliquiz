@@ -85,7 +85,7 @@ function QuizComponent() {
         {currentQuestionIndex > 0 && missing == -1 && (
           <button
             type="button"
-            className="text-dPurple bg-magnolia inner-border-3 inner-border-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple hover:inner-border-thistle"
+            className="text-d-purple bg-magnolia inner-border-3 inner-border-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-d-purple hover:inner-border-thistle"
             onClick={backPage}
           >
             Back
@@ -94,7 +94,7 @@ function QuizComponent() {
         {currentQuestionIndex < quizMaterial.length - 1 && (
           <button
             type="button"
-            className="text-seasalt bg-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple"
+            className="text-seasalt bg-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-d-purple"
             onClick={nextPage}
           >
             Next
@@ -107,25 +107,25 @@ function QuizComponent() {
             <button
               type="button"
               onClick={submit}
-              className="text-seasalt bg-iqRed text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-iqLightRed hover:text-dPurple"
+              className="text-seasalt bg-iq-red text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-iq-light-red hover:text-d-purple"
             >
               Submit
             </button>
           ) : (
             <div className="flex flex-col gap-2">
-              <p className="text-button text-dPurple">Looks like you missed a few questions!</p>
+              <p className="text-button text-d-purple">Looks like you missed a few questions!</p>
               <div className="flex gap-4">
               <button
                 type="button"
                 onClick={submitAnyways}
-                className="text-seasalt bg-iqRed text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-iqLightRed hover:text-dPurple"
+                className="text-seasalt bg-iq-red text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-iq-light-red hover:text-d-purple"
               >
                 Submit Anyways
               </button>
               <button
                 type="button"
                 onClick={goBack}
-                className="text-seasalt bg-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-dPurple"
+                className="text-seasalt bg-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-d-purple"
               >
                 Back to Quiz
               </button>

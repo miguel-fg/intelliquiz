@@ -54,8 +54,8 @@ function Home() {
     return (
       <div className='flex flex-col w-11/12 lg:w-8/12 h-screen justify-center items-center'>
         <LoadingSpinner />
-        <h1 className='text-header font-oswald text-dPurple mb-5'>Loading...</h1>
-        <h1 className='text-button font-oswald text-dPurple text-balance'>This might take some time while the server wakes up.</h1>
+        <h1 className='text-header font-oswald text-d-purple mb-5'>Loading...</h1>
+        <h1 className='text-button font-oswald text-d-purple text-balance'>This might take some time while the server wakes up.</h1>
       </div>
     );
   }

@@ -16,18 +16,18 @@ export default function AttemptingPart({ question, passValue, index }) {
   };
 
   const colors = [
-    "bg-iqLightGreen",
-    "bg-iqLightRed",
-    "bg-iqLightYellow",
-    "bg-iqLightBlue",
+    "bg-iq-light-green",
+    "bg-iq-light-red",
+    "bg-iq-light-yellow",
+    "bg-iq-light-blue",
   ];
-  const selectedColors = ["bg-iqGreen", "bg-iqRed", "bg-iqYellow", "bg-iqBlue"];
+  const selectedColors = ["bg-iq-green", "bg-iq-red", "bg-iq-yellow", "bg-iq-blue"];
 
   // option == selectedValue ? full color : normal color
 
   return (
     <div className="w-full">
-      <h1 className="text-header-mb md:text-header text-dPurple mb-3">
+      <h1 className="text-header-mb md:text-header text-d-purple mb-3">
         {index + 1}. {question.question}
       </h1>
       <div className="grid grid-cols-2 gap-4 w-full">
