@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import api from "../scripts/axiosInstance";
+import { useQuiz } from "../context/QuizContext";
 import RadioInput from "../components/inputs/RadioInput";
 import TextAreaInput from "../components/inputs/TextAreaInput";
 import FileInput from "../components/inputs/FileInput";
@@ -14,12 +16,55 @@ function Home() {
   const [typeQuestions, setTypeQuestions] = useState<
     "mcq" | "open" | "t/f" | "mixed"
   >("mixed");
+  const [isGenDisabled, setIsGenDisabled] = useState(true);
   const typeOptions = [
     { label: "Multiple Choice", value: "mcq" },
     { label: "Open Answer", value: "open" },
     { label: "True / False", value: "t/f" },
     { label: "Mixed", value: "mixed" },
   ];
+
+  const { quiz, setQuiz } = useQuiz();
+
+  const generateQuiz = async () => {
+    console.log("Generating quiz...");
+    setQuiz("loading");
+
+    const data = {
+      numQuestions,
+      typeQuestions,
+      textInput,
+    };
+
+    try {
+      const response = await api.post("/gpt/quiz", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data.validJson) {
+        console.log("SUCCESS");
+        setQuiz(response.data.quiz.questions);
+      } else {
+        setQuiz("error");
+        console.error(response.data);
+        throw new Error("OpenAI returned invalid JSON format.");
+      }
+    } catch (error) {
+      console.error("Failed to fetch quiz. ", error);
+    }
+  };
+
+  useEffect(() => {
+    if (inputMode === "text" && !textInput) {
+      setIsGenDisabled(true);
+    } else if (inputMode === "file" && !uploadedFile) {
+      setIsGenDisabled(true);
+    } else {
+      setIsGenDisabled(false);
+    }
+  }, [inputMode, textInput, uploadedFile]);
 
   return (
     <div className="flex justify-center w-full @container">
@@ -115,8 +160,11 @@ function Home() {
             options={typeOptions}
           />
         </div>
-        <div className="flex justify-center md:grid md:grid-cols-3 w-full mt-6">
-          <ButtonInput className="col-span-1 col-start-2">
+        <div className="flex justify-center sm:grid sm:grid-cols-3 w-full mt-6">
+          <ButtonInput
+            onClick={generateQuiz}
+            className={`col-span-1 col-start-2 w-full ${isGenDisabled ? "opacity-50 pointer-events-none" : ""}`}
+          >
             Generate Quiz
           </ButtonInput>
         </div>

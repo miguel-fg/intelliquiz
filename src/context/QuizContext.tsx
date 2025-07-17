@@ -1,16 +1,36 @@
-import React, { createContext, useState } from "react";
+import { createContext, useState, ReactNode, useContext } from "react";
+import { QuizQuestion, QuizState } from "../types/quiz";
 
-export const QuizContext = createContext(null);
+interface QuizContextType {
+  quiz: QuizState;
+  setQuiz: React.Dispatch<React.SetStateAction<QuizState>>;
+}
 
-const QuizContextProvider = (props) => {
-  const [quiz, setQuiz] = useState();
-  if (!quiz) {
-    setQuiz(props.defaultQuiz || []);
-  }
+export const QuizContext = createContext<QuizContextType | null>(null);
+
+interface ContextProps {
+  defaultQuiz?: QuizQuestion[];
+  children: ReactNode;
+}
+
+const QuizContextProvider = ({ defaultQuiz = [], children }: ContextProps) => {
+  const [quiz, setQuiz] = useState<QuizState>(defaultQuiz);
+
   return (
     <QuizContext.Provider value={{ quiz, setQuiz }}>
-      {props.children}
+      {children}
     </QuizContext.Provider>
   );
 };
+
+export const useQuiz = (): QuizContextType => {
+  const context = useContext(QuizContext);
+
+  if (!context) {
+    throw new Error("useQuiz must be used inside a QuizContextProvider");
+  }
+
+  return context;
+};
+
 export default QuizContextProvider;

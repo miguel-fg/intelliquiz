@@ -20,8 +20,8 @@ const RadioInput: FC<Props> = ({ value, name, checked, onChange, label }) => {
         onChange={() => onChange(value)}
       />
       <span
-        className={`w-5 h-5 rounded-full border-2 transition-colors ${
-          checked ? "border-primary-600" : "border-grayscale-400"
+        className={`w-5 h-5 rounded-full border transition-colors bg-grayscale-200 ${
+          checked ? "border-primary-600 bg-transparent" : "border-grayscale-400"
         } flex items-center justify-center`}
       >
         {checked && (

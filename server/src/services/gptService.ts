@@ -1,10 +1,50 @@
 import { JSONObject } from "hono/utils/types";
 
-const jsonTemplate = `
-{
+const jsonTemplates = {
+  mcq: `{
   "questions": [
     {
       "question": "What is the capital city of Canada?",
+      "type": "mcq",
+      "options": ["Vancouver", "Ottawa", "Winnipeg", "Toronto"],
+      "answer": "Ottawa",
+      "hint": "This city sits on the border of Ontario and Quebec.",
+      "explanation": "Ottawa is the capital of Canada, located in Ontario, near Quebec."
+    }
+  ]
+}`,
+
+  "t/f": `{
+  "questions": [
+    {
+      "question": "Ottawa is the capital city of Canada.",
+      "type": "t/f",
+      "options": ["true", "false"],
+      "answer": "true",
+      "hint": "Canada's capital is located in the province of Ontario.",
+      "explanation": "Ottawa is the official capital city of Canada."
+    }
+  ]
+}`,
+
+  open: `{
+  "questions": [
+    {
+      "question": "Explain the significance of Ottawa as Canada's capital city.",
+      "type": "open",
+      "options": null,
+      "answer": "Ottawa serves as Canada's political center, housing Parliament Hill and federal government institutions. Its location between Ontario and Quebec symbolizes national unity.",
+      "hint": "Consider its political role and geographic positioning.",
+      "explanation": null
+    }
+  ]
+}`,
+
+  mixed: `{
+  "questions": [
+    {
+      "question": "What is the capital city of Canada?",
+      "type": "mcq",
       "options": ["Vancouver", "Ottawa", "Winnipeg", "Toronto"],
       "answer": "Ottawa",
       "hint": "This city sits on the border of Ontario and Quebec.",
@@ -12,56 +52,83 @@ const jsonTemplate = `
     },
     {
       "question": "Ottawa is the capital city of Canada.",
+      "type": "t/f",
       "options": ["true", "false"],
       "answer": "true",
       "hint": "Canada's capital is located in the province of Ontario.",
       "explanation": "Ottawa is the official capital city of Canada."
     }
   ]
-}`;
+}`,
+};
 
 const quizPrompt = (
   numQuestions: number,
   questionType: string,
-  textInput: string
+  textInput: string,
 ) => {
-  return `Generate ${numQuestions} quiz questions of type '${questionType}' based on the following text: '${textInput}'.
-  The response must be in valid JSON format. Ensure the JSON structure matches the following example:
-  ${jsonTemplate}.
-  
-  IMPORTANT:
-  - Do not include any line breaks, escape characters (e.g., "\\n"), or additional text in the response.
-  - Replace single quotes with double quotes in the JSON object.
-  - Each question must have a "hint" field, giving a subtle clue (max 15 words).
-  - Provide an "explanation" field for each question (max 50 words), ensuring that the explanation does not directly reference the input text.
+  const template = jsonTemplates[questionType as keyof typeof jsonTemplates];
 
-  Ensure that the output can be parsed directly as valid JSON.`;
+  if (!template) {
+    throw new Error(`Unsupported question type: ${questionType}`);
+  }
+
+  const typeInstructions = {
+    mcq: "Create multiple-choice questions with 4 plausible options.",
+    "t/f": "Create true/false statements that test key concepts.",
+    open: "Create open-ended questions requiring brief and detailed explanations. Set options to null.",
+    mixed:
+      "Create a mix of question types (mcq, t/f, open) with varied difficulty.",
+  };
+
+  return `Create ${numQuestions} quiz question${numQuestions > 1 ? "s" : ""} based on this text:
+    
+    "${textInput}"
+    
+    Requirements:
+    - Question type: ${questionType}
+    - ${typeInstructions[questionType as keyof typeof typeInstructions]}
+    - Output valid JSON only, no additional text. It MUST be parseable as JSON.
+    - Follow this exact structure:
+
+    ${template}
+
+    Rules:
+    - hints: max 15 words, subtle clues only
+    - explanations: max 50 words, don't quote source text
+    - mcq: 4 options, 1 correct
+    - t/f: use ["true", "false"] for options
+    - open: set options to null, provide sample answer
+    - Vary difficulty levels across questions`;
 };
 
 const validateJsonFormat = (jsonString: string) => {
   try {
     return {
       validJson: true,
-      quiz: JSON.parse(jsonString)
+      quiz: JSON.parse(jsonString),
     };
   } catch (error: any) {
     return {
       validJson: false,
-      error: `Invalid JSON format: ${error.message}`
-    }
+      error: `Invalid JSON format: ${error.message}`,
+    };
   }
-}
+};
 
-const feedbackPrompt = (wrongQuestions: Array<JSONObject>, rightQuestions: Array<JSONObject>) => {
+const feedbackPrompt = (
+  wrongQuestions: Array<JSONObject>,
+  rightQuestions: Array<JSONObject>,
+) => {
   let wrongQuestionsText =
     wrongQuestions.length > 0
       ? `The user got the following questions wrong: ${wrongQuestions}.`
-      : '';
+      : "";
 
   let rightQuestionsText =
     rightQuestions.length > 0
       ? `They answered these questions correctly: ${rightQuestions}.`
-      : '';
+      : "";
 
   return `Based on the user's quiz attempts:
   

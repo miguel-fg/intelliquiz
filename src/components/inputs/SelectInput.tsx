@@ -34,7 +34,7 @@ const SelectInput: FC<Props> = ({
         onChange={(e) =>
           onChange(e.target.value as "mcq" | "open" | "t/f" | "mixed")
         }
-        className="bg-white rounded-sm border border-grayscale-400 focus:outline-none focus:ring-2 focus:ring-primary-500 px-2 py-0.5 body-font text-grayscale-900 min-w-28"
+        className="bg-white rounded-sm border border-grayscale-400 focus:outline-none focus:ring-2 focus:ring-primary-500 px-2 py-0.5 body-font text-grayscale-900 min-w-28 cursor-pointer"
       >
         {placeholder && (
           <option value="" disabled hidden>
