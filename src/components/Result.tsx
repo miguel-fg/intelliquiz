@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { QuizContext } from "../context/QuizContext";
 import { useNavigate } from "react-router-dom";
-import Divider from "./Divider";
 import LoadingSpinner from "./LoadingSpinner";
 import { downloadPDF } from "../scripts/pdfHelper";
 import logo from "../components/images/logo.png";
@@ -40,26 +39,24 @@ function Result() {
 
     const data = {
       wrongQuestions: wrongQuestions,
-      rightQuestions: rightQuestions
-    }
+      rightQuestions: rightQuestions,
+    };
 
     try {
-      const response = await api.post('/gpt/feedback', data, {
+      const response = await api.post("/gpt/feedback", data, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       });
 
       const feedback = response.data;
       setFeedback(feedback);
-    } catch (error) {
-
-    }
+    } catch (error) {}
   };
 
-  const downloadReport = async () => {  
-    const token = localStorage.getItem('accessToken');  
-    const template = 'report';
+  const downloadReport = async () => {
+    const token = localStorage.getItem("accessToken");
+    const template = "report";
     setLoadingReport(true);
 
     const quizData = {
@@ -79,20 +76,20 @@ function Result() {
       quizData: quizData,
       templateID: template,
       pwd: null,
-      report: true
-    }
+      report: true,
+    };
 
     try {
-      const response = await api.post('/pdf/generate', reqData, {
+      const response = await api.post("/pdf/generate", reqData, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       });
 
-      if(response.data.downloadUri){
+      if (response.data.downloadUri) {
         await downloadPDF(response.data.downloadUri);
       } else {
-        throw new Error('Invalid response from Intelliquiz Server');
+        throw new Error("Invalid response from Intelliquiz Server");
       }
     } catch (error) {
       console.log("Failed to generate PDF report. ", error);
@@ -123,10 +120,20 @@ function Result() {
         >
           Download Report{" "}
         </button>
-        {isLoadingReport ? (<div className="flex gap-2">
-          <img src={logo} alt="Intelliquiz logo" className="w-12 h-12 animate-fade-in-out"/>
-          <h1 className="text-d-purple md:text-button text-button-mb">Loading...</h1>  
-        </div>) : (<></>)}
+        {isLoadingReport ? (
+          <div className="flex gap-2">
+            <img
+              src={logo}
+              alt="Intelliquiz logo"
+              className="w-12 h-12 animate-fade-in-out"
+            />
+            <h1 className="text-d-purple md:text-button text-button-mb">
+              Loading...
+            </h1>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
       <Divider />
       <div>
@@ -135,12 +142,16 @@ function Result() {
         ))}
       </div>
       <Divider />
-      <h1 className="text-header-mb mb:text-header text-d-purple mb-3">Feedback</h1>
+      <h1 className="text-header-mb mb:text-header text-d-purple mb-3">
+        Feedback
+      </h1>
 
       <div className="feedback-section my-4">
         {feedback == "" ? (
           <div>
-            <h1 className="text-header-mb mb:text-header text-d-purple mb-5">Loading...</h1>
+            <h1 className="text-header-mb mb:text-header text-d-purple mb-5">
+              Loading...
+            </h1>
             <LoadingSpinner />
           </div>
         ) : (
@@ -150,25 +161,33 @@ function Result() {
         )}
       </div>
       <div className="flex gap-4 flex-wrap pb-6">
-      <button
-        type="button"
-        className="text-seasalt bg-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-d-purple md:my-6"
-        onClick={homePage}
-      >
-        Home Page
-      </button>
-      <button
-        className="text-d-purple bg-magnolia inner-border-3 inner-border-amethyst text-center px-2 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg enabled:hover:bg-thistle enabled:hover:inner-border-thistle disabled:opacity-70 md:my-6"
-        disabled={feedback === ""}
-        onClick={downloadReport}
-        data-testid="download-report-button"
-      >
-        Download Report
-      </button>     
-      {isLoadingReport ? (<div className="flex gap-2 my-6">
-        <img src={logo} alt="Intelliquiz logo" className="w-12 h-12 animate-fade-in-out"/>
-        <h1 className="text-d-purple text-button">Loading...</h1>  
-      </div>) : (<></>)}
+        <button
+          type="button"
+          className="text-seasalt bg-amethyst text-center w-24 lg:w-150 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg hover:bg-thistle hover:text-d-purple md:my-6"
+          onClick={homePage}
+        >
+          Home Page
+        </button>
+        <button
+          className="text-d-purple bg-magnolia inner-border-3 inner-border-amethyst text-center px-2 py-1 lg:text-button text-button-mb rounded-md drop-shadow-lg enabled:hover:bg-thistle enabled:hover:inner-border-thistle disabled:opacity-70 md:my-6"
+          disabled={feedback === ""}
+          onClick={downloadReport}
+          data-testid="download-report-button"
+        >
+          Download Report
+        </button>
+        {isLoadingReport ? (
+          <div className="flex gap-2 my-6">
+            <img
+              src={logo}
+              alt="Intelliquiz logo"
+              className="w-12 h-12 animate-fade-in-out"
+            />
+            <h1 className="text-d-purple text-button">Loading...</h1>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );
@@ -190,8 +209,8 @@ export const DisplayQuiz = ({ data, index }) => {
               value == data.answer
                 ? "bg-iq-light-green inner-border-iqGreen"
                 : value == data.userResponse
-                ? "bg-iq-light-red inner-border-iqRed"
-                : "bg-seasalt inner-border-thistle"
+                  ? "bg-iq-light-red inner-border-iqRed"
+                  : "bg-seasalt inner-border-thistle"
             }`}
           >
             <p className="text-body">{`${value}`}</p>
@@ -204,7 +223,9 @@ export const DisplayQuiz = ({ data, index }) => {
             {value == data.answer && value == data.userResponse ? (
               ""
             ) : data.answer == value ? (
-              <p className="text-body text-d-purple font-garamond">{data.explanation}</p>
+              <p className="text-body text-d-purple font-garamond">
+                {data.explanation}
+              </p>
             ) : (
               ""
             )}

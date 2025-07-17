@@ -17,7 +17,7 @@ const TextAreaInput: FC<Props> = ({
     <>
       <label htmlFor="text-input" className="sr-only"></label>
       <textarea
-        className="w-full p-2 rounded-md border border-grayscale-400 focus:outline-none focus:ring-2 focus:ring-primary-500 font-body bg-white"
+        className="w-full p-2 rounded-md border border-grayscale-400 focus:outline-none focus:ring-2 focus:ring-primary-500 body-font text-grayscale-900 bg-white"
         name="text-input"
         id="text-input"
         rows={10}

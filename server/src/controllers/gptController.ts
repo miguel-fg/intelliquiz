@@ -1,4 +1,5 @@
 import { Context } from "hono";
+import { v4 as uuidv4 } from "uuid";
 import "dotenv/config";
 import axios from "axios";
 import {
@@ -36,7 +37,19 @@ const quizController = async (c: Context) => {
       throw new Error(quizData.error);
     }
 
-    return c.json(quizData);
+    const parsed = quizData.quiz;
+
+    const result = {
+      id: uuidv4(),
+      cover: {
+        ...parsed.cover,
+        numQuestions,
+        typeQuestions,
+      },
+      questions: parsed.questions,
+    };
+
+    return c.json(result);
   } catch (error) {
     return c.json({ error: `Failed to generate quiz ERR:${error}` }, 500);
   }

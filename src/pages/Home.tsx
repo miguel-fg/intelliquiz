@@ -7,6 +7,8 @@ import FileInput from "../components/inputs/FileInput";
 import NumberInput from "../components/inputs/NumberInput";
 import SelectInput from "../components/inputs/SelectInput";
 import ButtonInput from "../components/inputs/ButtonInput";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const [inputMode, setInputMode] = useState<"text" | "file">("text");
@@ -17,6 +19,8 @@ function Home() {
     "mcq" | "open" | "t/f" | "mixed"
   >("mixed");
   const [isGenDisabled, setIsGenDisabled] = useState(true);
+  const [showLoading, setShowLoading] = useState(false);
+
   const typeOptions = [
     { label: "Multiple Choice", value: "mcq" },
     { label: "Open Answer", value: "open" },
@@ -24,7 +28,8 @@ function Home() {
     { label: "Mixed", value: "mixed" },
   ];
 
-  const { quiz, setQuiz } = useQuiz();
+  const { quiz, setQuiz, setDefault } = useQuiz();
+  const navigate = useNavigate();
 
   const generateQuiz = async () => {
     console.log("Generating quiz...");
@@ -43,16 +48,11 @@ function Home() {
         },
       });
 
-      if (response.data.validJson) {
-        console.log("SUCCESS");
-        setQuiz(response.data.quiz.questions);
-      } else {
-        setQuiz("error");
-        console.error(response.data);
-        throw new Error("OpenAI returned invalid JSON format.");
-      }
+      console.log("SUCCESS");
+      setQuiz(response.data);
     } catch (error) {
       console.error("Failed to fetch quiz. ", error);
+      setQuiz("error");
     }
   };
 
@@ -66,8 +66,26 @@ function Home() {
     }
   }, [inputMode, textInput, uploadedFile]);
 
+  useEffect(() => {
+    if (quiz === "loading") {
+      setShowLoading(true);
+    } else if (quiz === "error") {
+      setShowLoading(false);
+    } else if (quiz) {
+      navigate(`/quiz/${quiz.id}`);
+    }
+  }, [quiz]);
+
   return (
     <div className="flex justify-center w-full @container">
+      {showLoading && (
+        <div className="fixed inset-0 z-10 bg-primary-700 flex flex-col justify-center items-center">
+          <LoadingSpinner />
+          <span className="heading-font text-grayscale-100">
+            Generating quiz...
+          </span>
+        </div>
+      )}
       <div className="w-full max-w-[1080px] px-4 md:px-8 lg:px-16 @min-[1080px]:px-0 mt-16">
         <h1 className="heading-font text-grayscale-900 mb-2">
           Generate quiz from...
@@ -162,7 +180,7 @@ function Home() {
         </div>
         <div className="flex justify-center sm:grid sm:grid-cols-3 w-full mt-6">
           <ButtonInput
-            onClick={generateQuiz}
+            onClick={setDefault}
             className={`col-span-1 col-start-2 w-full ${isGenDisabled ? "opacity-50 pointer-events-none" : ""}`}
           >
             Generate Quiz

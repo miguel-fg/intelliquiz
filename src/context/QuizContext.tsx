@@ -1,5 +1,17 @@
-import { createContext, useState, ReactNode, useContext } from "react";
-import { QuizQuestion, QuizState } from "../types/quiz";
+import {
+  createContext,
+  useState,
+  ReactNode,
+  useContext,
+  useEffect,
+} from "react";
+import { QuizState } from "../types/quiz";
+import sampleQuiz from "../assets/sampleQuiz";
+import {
+  clearQuizStorage,
+  loadQuizFromStorage,
+  saveQuizToStorage,
+} from "../scripts/localStorage";
 
 interface QuizContextType {
   quiz: QuizState;
@@ -9,12 +21,24 @@ interface QuizContextType {
 export const QuizContext = createContext<QuizContextType | null>(null);
 
 interface ContextProps {
-  defaultQuiz?: QuizQuestion[];
+  defaultQuiz?: QuizState;
   children: ReactNode;
 }
 
-const QuizContextProvider = ({ defaultQuiz = [], children }: ContextProps) => {
-  const [quiz, setQuiz] = useState<QuizState>(defaultQuiz);
+const QuizContextProvider = ({
+  defaultQuiz = null,
+  children,
+}: ContextProps) => {
+  const [quiz, setQuiz] = useState<QuizState>(() => {
+    const local = loadQuizFromStorage();
+    return local ?? defaultQuiz;
+  });
+
+  useEffect(() => {
+    if (typeof quiz === "object" && quiz !== null) {
+      saveQuizToStorage(quiz);
+    }
+  });
 
   return (
     <QuizContext.Provider value={{ quiz, setQuiz }}>
@@ -23,14 +47,26 @@ const QuizContextProvider = ({ defaultQuiz = [], children }: ContextProps) => {
   );
 };
 
-export const useQuiz = (): QuizContextType => {
+export const useQuiz = (): QuizContextType & {
+  clear: () => void;
+  setDefault: () => void;
+} => {
   const context = useContext(QuizContext);
 
   if (!context) {
     throw new Error("useQuiz must be used inside a QuizContextProvider");
   }
 
-  return context;
+  const clear = () => {
+    clearQuizStorage();
+    context.setQuiz(null);
+  };
+
+  const setDefault = () => {
+    context.setQuiz(sampleQuiz);
+  };
+
+  return { ...context, clear, setDefault };
 };
 
 export default QuizContextProvider;

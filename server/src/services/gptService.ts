@@ -19,8 +19,8 @@ const jsonTemplates = {
     {
       "question": "Ottawa is the capital city of Canada.",
       "type": "t/f",
-      "options": ["true", "false"],
-      "answer": "true",
+      "options": ["True", "False"],
+      "answer": "True",
       "hint": "Canada's capital is located in the province of Ontario.",
       "explanation": "Ottawa is the official capital city of Canada."
     }
@@ -53,8 +53,8 @@ const jsonTemplates = {
     {
       "question": "Ottawa is the capital city of Canada.",
       "type": "t/f",
-      "options": ["true", "false"],
-      "answer": "true",
+      "options": ["True", "False"],
+      "answer": "True",
       "hint": "Canada's capital is located in the province of Ontario.",
       "explanation": "Ottawa is the official capital city of Canada."
     }
@@ -74,30 +74,47 @@ const quizPrompt = (
   }
 
   const typeInstructions = {
-    mcq: "Create multiple-choice questions with 4 plausible options.",
-    "t/f": "Create true/false statements that test key concepts.",
-    open: "Create open-ended questions requiring brief and detailed explanations. Set options to null.",
-    mixed:
-      "Create a mix of question types (mcq, t/f, open) with varied difficulty.",
+    mcq: `Create ${numQuestions} multiple-choice questions. Each must have exactly 4 plausible options and only one correct answer. Do not include true or false questions.`,
+    "t/f": `Create ${numQuestions} True/False questions. Use only ["True", "False"] as options. Capitalize the options.`,
+    open: `Create ${numQuestions} open-ended questions that require short explanations. Set "options" to null.`,
+    mixed: `Create ${numQuestions} questions using a mix of mcq, t/f, and open types.`,
   };
 
-  return `Create ${numQuestions} quiz question${numQuestions > 1 ? "s" : ""} based on this text:
-    
+  const strictTypeConstraint =
+    questionType !== "mixed"
+      ? `Only generate questions of type "${questionType}". Do NOT include any other types.`
+      : `Use a varied mix of question types.`;
+
+  return `You are generating a quiz in JSON format based on the following input text:    
+
     "${textInput}"
     
     Requirements:
+    - Number of questions: ${numQuestions}
     - Question type: ${questionType}
     - ${typeInstructions[questionType as keyof typeof typeInstructions]}
+    - ${strictTypeConstraint}
     - Output valid JSON only, no additional text. It MUST be parseable as JSON.
     - Follow this exact structure:
 
+    Structure:
+    {
+      "cover": {
+        "title": "A clear, engaging quiz title. Do not use words like 'Quiz','Test', or similar",
+        "description": "A 1-2 sentence overview of the quiz topic",
+        "estTime": "Estimated time to complete, e.g. '5 minutes'"
+      },
+      "questions": [...]
+    }
+
+    Example question structure:
     ${template}
 
     Rules:
     - hints: max 15 words, subtle clues only
     - explanations: max 50 words, don't quote source text
     - mcq: 4 options, 1 correct
-    - t/f: use ["true", "false"] for options
+    - t/f: use ["True", "False"] for options
     - open: set options to null, provide sample answer
     - Vary difficulty levels across questions`;
 };

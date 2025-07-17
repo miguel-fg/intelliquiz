@@ -1,11 +1,12 @@
 import Home from "./pages/Home";
+import Quiz from "./pages/Quiz";
 import Navbar from "./components/Navbar";
-import QuizComponent from "./components/QuizComponent";
 import LoadingSpinner from "./components/LoadingSpinner";
 import Result from "./components/Result";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api from "./scripts/axiosInstance";
+import Oops from "./pages/Oops";
 
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -67,11 +68,13 @@ const App = () => {
         <Router>
           <Routes>
             <Route path="/*" element={<Home />} />
-            <Route path="/attempt" element={<QuizComponent />} />
+            <Route path="/quiz/:quizId" element={<Quiz />} />
             <Route path="/result" element={<Result />} />
+            <Route path="/oops" element={<Oops />} />
           </Routes>
         </Router>
       </div>
+      <div className="w-full h-4 bg-primary-200"></div>
     </>
   );
 };
