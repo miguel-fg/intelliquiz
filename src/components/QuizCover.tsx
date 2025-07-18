@@ -17,9 +17,9 @@ interface Props {
 export const QuizCover: FC<Props> = ({ cover, onStart, onExit }) => {
   const questionTypes = {
     mcq: "Multiple Choice",
-    "t/f": "True or false",
+    "t/f": "True or False",
     open: "Open Ended",
-    mixed: "Multiple Choice, True or false, and Open Ended",
+    mixed: "Multiple Choice, True or False",
   };
   return (
     <>

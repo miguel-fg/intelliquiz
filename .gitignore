@@ -25,6 +25,7 @@ dist-ssr
 
 # Test PDF files
 PDF/
+sampleTextFiles/
 
 # Environment variables
 .env

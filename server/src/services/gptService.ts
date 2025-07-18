@@ -1,5 +1,3 @@
-import { JSONObject } from "hono/utils/types";
-
 const jsonTemplates = {
   mcq: `{
   "questions": [
@@ -23,19 +21,6 @@ const jsonTemplates = {
       "answer": "True",
       "hint": "Canada's capital is located in the province of Ontario.",
       "explanation": "Ottawa is the official capital city of Canada."
-    }
-  ]
-}`,
-
-  open: `{
-  "questions": [
-    {
-      "question": "Explain the significance of Ottawa as Canada's capital city.",
-      "type": "open",
-      "options": null,
-      "answer": "Ottawa serves as Canada's political center, housing Parliament Hill and federal government institutions. Its location between Ontario and Quebec symbolizes national unity.",
-      "hint": "Consider its political role and geographic positioning.",
-      "explanation": null
     }
   ]
 }`,
@@ -76,8 +61,7 @@ const quizPrompt = (
   const typeInstructions = {
     mcq: `Create ${numQuestions} multiple-choice questions. Each must have exactly 4 plausible options and only one correct answer. Do not include true or false questions.`,
     "t/f": `Create ${numQuestions} True/False questions. Use only ["True", "False"] as options. Capitalize the options.`,
-    open: `Create ${numQuestions} open-ended questions that require short explanations. Set "options" to null.`,
-    mixed: `Create ${numQuestions} questions using a mix of mcq, t/f, and open types.`,
+    mixed: `Create ${numQuestions} questions using a balanced mix of multiple-choice and true/false options.`,
   };
 
   const strictTypeConstraint =
@@ -115,7 +99,6 @@ const quizPrompt = (
     - explanations: max 50 words, don't quote source text
     - mcq: 4 options, 1 correct
     - t/f: use ["True", "False"] for options
-    - open: set options to null, provide sample answer
     - Vary difficulty levels across questions`;
 };
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../scripts/axiosInstance";
 import { useQuiz } from "../context/QuizContext";
+import { extractTextFromFile } from "../scripts/textExtraction";
 import RadioInput from "../components/inputs/RadioInput";
 import TextAreaInput from "../components/inputs/TextAreaInput";
 import FileInput from "../components/inputs/FileInput";
@@ -27,7 +28,7 @@ function Home() {
     { label: "Mixed", value: "mixed" },
   ];
 
-  const { quiz, setQuiz, setDefault } = useQuiz();
+  const { quiz, setQuiz } = useQuiz();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -35,10 +36,27 @@ function Home() {
     console.log("Generating quiz...");
     setQuiz("loading");
 
+    let finalText = textInput;
+
+    if (inputMode === "file" && uploadedFile) {
+      try {
+        finalText = await extractTextFromFile(uploadedFile);
+
+        if (!finalText || finalText.trim().length < 30) {
+          throw new Error("Text extraction failed or too short");
+        }
+      } catch (error) {
+        console.error("Error extracting file content: ", error);
+        alert("There was a problem reading the file. Please try another.");
+        setQuiz("error");
+        return;
+      }
+    }
+
     const data = {
       numQuestions,
       typeQuestions,
-      textInput,
+      textInput: finalText,
     };
 
     try {
@@ -182,7 +200,7 @@ function Home() {
         </div>
         <div className="flex justify-center sm:grid sm:grid-cols-3 w-full mt-6">
           <ButtonInput
-            onClick={setDefault}
+            onClick={generateQuiz}
             className={`col-span-1 col-start-2 w-full ${isGenDisabled ? "opacity-50 pointer-events-none" : ""}`}
           >
             Generate Quiz
