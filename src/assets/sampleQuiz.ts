@@ -35,11 +35,15 @@ const sampleQuiz: QuizJsonResponse = {
         "Uracil is found in RNA, while DNA contains thymine along with adenine, cytosine, and guanine.",
     },
     {
-      question: "Describe the process of DNA replication in your own words.",
-      type: "open",
-      options: null,
-      answer:
-        "DNA replication involves unwinding the double helix, separating the two strands, and using each strand as a template to synthesize a new complementary strand, resulting in two identical DNA molecules.",
+      question: "Which of these is NOT a step in the DNA replication process?",
+      type: "mcq",
+      options: [
+        "Unwinding the double helix",
+        "Separating three strands",
+        "Synthesize a complementary strand",
+        "Using each strand as templates",
+      ],
+      answer: "Separating three strands",
       hint: "Think about how the strands separate and new strands are formed.",
       explanation: null,
     },

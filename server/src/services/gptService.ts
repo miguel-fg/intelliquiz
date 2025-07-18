@@ -134,37 +134,39 @@ const validateJsonFormat = (jsonString: string) => {
 };
 
 const feedbackPrompt = (
-  wrongQuestions: Array<JSONObject>,
-  rightQuestions: Array<JSONObject>,
-) => {
-  let wrongQuestionsText =
-    wrongQuestions.length > 0
-      ? `The user got the following questions wrong: ${wrongQuestions}.`
-      : "";
+  correctQuestions: string[],
+  wrongQuestions: string[],
+): string => {
+  const correctCount = correctQuestions.length;
+  const wrongCount = wrongQuestions.length;
+  const totalQuestions = correctCount + wrongCount;
 
-  let rightQuestionsText =
-    rightQuestions.length > 0
-      ? `They answered these questions correctly: ${rightQuestions}.`
-      : "";
+  const prompt = `
+    You are an educational assistant providing feedback on a quiz attempt. Please provide feedback in the following JSON format. Your response MUST be parseable as JSON:
 
-  return `Based on the user's quiz attempts:
-  
-  ${wrongQuestionsText} ${rightQuestionsText}
+    {
+      "feedback": "string",
+      "review": "string",
+    }
 
-  Please provide feedback on their performance in approximately 100 words. Highlight their strengths and areas for improvement.
+    **Quiz Results:**
+    - Total Questions: ${totalQuestions}
+    - Correct Answers: ${correctCount}
+    - Wrong Answers: ${wrongCount}
 
-  - Mention specific areas where they excelled and where they need to focus more.
-  - Provide encouragement and positive reinforcement based on their performance.
-  - Use the following grading criteria to guide your feedback without explicitly mentioning it:
-    - Outstanding: 95% or higher
-    - Excellent: 85% to 94%
-    - Good: 75% to 84%
-    - Average: 65% to 74%
-    - Below Average: 50% to 64%
-    - Work Hard: Below 50%
+    **Questions Answered Correctly:**
+    ${correctCount > 0 ? correctQuestions.map((q, i) => `${i + 1}. ${q}`).join("\n") : "None"}
 
-  Avoid directly referencing these criteria in your feedback, but ensure your comments reflect their performance level.
-  `;
+    **Questions Answered Incorrectly:**
+    ${wrongCount > 0 ? wrongQuestions.map((q, i) => `${i + 1}. ${q}`).join("\n") : "None"}
+
+    **Instructions:**
+    1. **Feedback**: Based on the score (${correctCount}/${totalQuestions}), provide constructive but encouraging feedback.Be specific about their performance level and motivating for improvement.
+    2. **Review**: Suggest 2-3 specific topics to review based primarily on the questions they got wrong. If there are no wrong answers, suggest moving to more advanced topics related to the subject matter. Make these actionable and specific to the content areas shown in the questions.
+
+    Respond only with the JSON object, no additional text. No string with JSON shape.`.trim();
+
+  return prompt;
 };
 
 export { quizPrompt, validateJsonFormat, feedbackPrompt };

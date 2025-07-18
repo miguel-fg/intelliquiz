@@ -10,6 +10,7 @@ import sampleQuiz from "../assets/sampleQuiz";
 import {
   clearAnswerStorage,
   clearQuizStorage,
+  clearFeedbackStorage,
   loadQuizFromStorage,
   saveQuizToStorage,
 } from "../scripts/localStorage";
@@ -64,6 +65,7 @@ export const useQuiz = (): QuizContextType & {
   const clear = () => {
     clearQuizStorage();
     clearAnswerStorage();
+    clearFeedbackStorage();
     context.setQuiz(null);
     context.setAnswers({});
   };

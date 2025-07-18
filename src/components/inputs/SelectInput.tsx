@@ -9,7 +9,7 @@ interface Props {
   id: string;
   label: string;
   value: string;
-  onChange: (value: "mcq" | "open" | "t/f" | "mixed") => void;
+  onChange: (value: "mcq" | "t/f" | "mixed") => void;
   options: Option[];
   placeholder?: string;
 }
@@ -31,9 +31,7 @@ const SelectInput: FC<Props> = ({
         name={id}
         id={id}
         value={value}
-        onChange={(e) =>
-          onChange(e.target.value as "mcq" | "open" | "t/f" | "mixed")
-        }
+        onChange={(e) => onChange(e.target.value as "mcq" | "t/f" | "mixed")}
         className="bg-white rounded-sm border border-grayscale-400 focus:outline-none focus:ring-2 focus:ring-primary-500 px-2 py-0.5 body-font text-grayscale-900 min-w-28 cursor-pointer"
       >
         {placeholder && (

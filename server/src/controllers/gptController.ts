@@ -58,10 +58,10 @@ const quizController = async (c: Context) => {
 // feedback generation
 const feedbackController = async (c: Context) => {
   console.log("Generating feedback...");
-  const { wrongQuestions, rightQuestions } = await c.req.json();
+  const { correct, wrong } = await c.req.json();
   const apiURI = "https://api.openai.com/v1/chat/completions";
 
-  const prompt = feedbackPrompt(wrongQuestions, rightQuestions);
+  const prompt = feedbackPrompt(correct, wrong);
 
   const data = {
     model: "gpt-4o-mini",

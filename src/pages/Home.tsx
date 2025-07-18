@@ -15,15 +15,14 @@ function Home() {
   const [textInput, setTextInput] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [numQuestions, setNumQuestions] = useState(10);
-  const [typeQuestions, setTypeQuestions] = useState<
-    "mcq" | "open" | "t/f" | "mixed"
-  >("mixed");
+  const [typeQuestions, setTypeQuestions] = useState<"mcq" | "t/f" | "mixed">(
+    "mixed",
+  );
   const [isGenDisabled, setIsGenDisabled] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
 
   const typeOptions = [
     { label: "Multiple Choice", value: "mcq" },
-    { label: "Open Answer", value: "open" },
     { label: "True / False", value: "t/f" },
     { label: "Mixed", value: "mixed" },
   ];
