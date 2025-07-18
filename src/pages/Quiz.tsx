@@ -3,15 +3,15 @@ import { useQuiz } from "../context/QuizContext";
 import QuizCover from "../components/QuizCover";
 import ButtonInput from "../components/inputs/ButtonInput";
 import { useEffect, useState } from "react";
+import { saveAnswersToStorage } from "../scripts/localStorage";
 
 const Quiz = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const { quiz, clear } = useQuiz();
+  const { quiz, clear, answers, setAnswers } = useQuiz();
 
   const [started, setStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
 
   const [showExitConfirmation, setShowExitConfirmation] = useState(false);
 
@@ -34,10 +34,12 @@ const Quiz = () => {
 
   const handleChange = (value: string) => {
     setAnswers((prev) => ({ ...prev, [currentIndex]: value }));
+    saveAnswersToStorage(answers);
   };
 
   const handleSubmit = () => {
-    console.log("Submitted answers: ", answers);
+    saveAnswersToStorage(answers);
+    navigate(`/score/${quiz.id}`);
   };
 
   return (

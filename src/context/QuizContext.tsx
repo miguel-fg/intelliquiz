@@ -8,6 +8,7 @@ import {
 import { QuizState } from "../types/quiz";
 import sampleQuiz from "../assets/sampleQuiz";
 import {
+  clearAnswerStorage,
   clearQuizStorage,
   loadQuizFromStorage,
   saveQuizToStorage,
@@ -16,6 +17,8 @@ import {
 interface QuizContextType {
   quiz: QuizState;
   setQuiz: React.Dispatch<React.SetStateAction<QuizState>>;
+  answers: Record<number, string>;
+  setAnswers: React.Dispatch<React.SetStateAction<Record<number, string>>>;
 }
 
 export const QuizContext = createContext<QuizContextType | null>(null);
@@ -33,6 +36,7 @@ const QuizContextProvider = ({
     const local = loadQuizFromStorage();
     return local ?? defaultQuiz;
   });
+  const [answers, setAnswers] = useState<Record<number, string>>({});
 
   useEffect(() => {
     if (typeof quiz === "object" && quiz !== null) {
@@ -41,7 +45,7 @@ const QuizContextProvider = ({
   });
 
   return (
-    <QuizContext.Provider value={{ quiz, setQuiz }}>
+    <QuizContext.Provider value={{ quiz, setQuiz, answers, setAnswers }}>
       {children}
     </QuizContext.Provider>
   );
@@ -59,7 +63,9 @@ export const useQuiz = (): QuizContextType & {
 
   const clear = () => {
     clearQuizStorage();
+    clearAnswerStorage();
     context.setQuiz(null);
+    context.setAnswers({});
   };
 
   const setDefault = () => {

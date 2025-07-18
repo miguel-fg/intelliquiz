@@ -8,7 +8,7 @@ import NumberInput from "../components/inputs/NumberInput";
 import SelectInput from "../components/inputs/SelectInput";
 import ButtonInput from "../components/inputs/ButtonInput";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Home() {
   const [inputMode, setInputMode] = useState<"text" | "file">("text");
@@ -29,6 +29,7 @@ function Home() {
   ];
 
   const { quiz, setQuiz, setDefault } = useQuiz();
+  const location = useLocation();
   const navigate = useNavigate();
 
   const generateQuiz = async () => {
@@ -67,6 +68,8 @@ function Home() {
   }, [inputMode, textInput, uploadedFile]);
 
   useEffect(() => {
+    if (location.pathname !== "/") return;
+
     if (quiz === "loading") {
       setShowLoading(true);
     } else if (quiz === "error") {
