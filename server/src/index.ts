@@ -1,19 +1,15 @@
-import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
-import { logger } from 'hono/logger';
-import { cors } from 'hono/cors';
-import gptRoutes from './routes/gptRoutes';
-import pdfRoutes from './routes/pdfRoutes';
+import { serve } from "@hono/node-server";
+import { Hono } from "hono";
+import { logger } from "hono/logger";
+import { cors } from "hono/cors";
+import gptRoutes from "./routes/gptRoutes";
 
 const app = new Hono();
 app.use(logger());
-app.use('/*', cors());
+app.use("/*", cors());
 
 // OPEN AI API requests
-app.route('/gpt', gptRoutes);
-
-// Adobe PDF Services API requests
-app.route('/pdf', pdfRoutes);
+app.route("/gpt", gptRoutes);
 
 const port = Number(process.env.PORT) || 4000;
 
