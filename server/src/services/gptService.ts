@@ -1,10 +1,35 @@
-import { JSONObject } from "hono/utils/types";
-
-const jsonTemplate = `
-{
+const jsonTemplates = {
+  mcq: `{
   "questions": [
     {
       "question": "What is the capital city of Canada?",
+      "type": "mcq",
+      "options": ["Vancouver", "Ottawa", "Winnipeg", "Toronto"],
+      "answer": "Ottawa",
+      "hint": "This city sits on the border of Ontario and Quebec.",
+      "explanation": "Ottawa is the capital of Canada, located in Ontario, near Quebec."
+    }
+  ]
+}`,
+
+  "t/f": `{
+  "questions": [
+    {
+      "question": "Ottawa is the capital city of Canada.",
+      "type": "t/f",
+      "options": ["True", "False"],
+      "answer": "True",
+      "hint": "Canada's capital is located in the province of Ontario.",
+      "explanation": "Ottawa is the official capital city of Canada."
+    }
+  ]
+}`,
+
+  mixed: `{
+  "questions": [
+    {
+      "question": "What is the capital city of Canada?",
+      "type": "mcq",
       "options": ["Vancouver", "Ottawa", "Winnipeg", "Toronto"],
       "answer": "Ottawa",
       "hint": "This city sits on the border of Ontario and Quebec.",
@@ -12,75 +37,119 @@ const jsonTemplate = `
     },
     {
       "question": "Ottawa is the capital city of Canada.",
-      "options": ["true", "false"],
-      "answer": "true",
+      "type": "t/f",
+      "options": ["True", "False"],
+      "answer": "True",
       "hint": "Canada's capital is located in the province of Ontario.",
       "explanation": "Ottawa is the official capital city of Canada."
     }
   ]
-}`;
+}`,
+};
 
 const quizPrompt = (
   numQuestions: number,
   questionType: string,
-  textInput: string
+  textInput: string,
 ) => {
-  return `Generate ${numQuestions} quiz questions of type '${questionType}' based on the following text: '${textInput}'.
-  The response must be in valid JSON format. Ensure the JSON structure matches the following example:
-  ${jsonTemplate}.
-  
-  IMPORTANT:
-  - Do not include any line breaks, escape characters (e.g., "\\n"), or additional text in the response.
-  - Replace single quotes with double quotes in the JSON object.
-  - Each question must have a "hint" field, giving a subtle clue (max 15 words).
-  - Provide an "explanation" field for each question (max 50 words), ensuring that the explanation does not directly reference the input text.
+  const template = jsonTemplates[questionType as keyof typeof jsonTemplates];
 
-  Ensure that the output can be parsed directly as valid JSON.`;
+  if (!template) {
+    throw new Error(`Unsupported question type: ${questionType}`);
+  }
+
+  const typeInstructions = {
+    mcq: `Create ${numQuestions} multiple-choice questions. Each must have exactly 4 plausible options and only one correct answer. Do not include true or false questions.`,
+    "t/f": `Create ${numQuestions} True/False questions. Use only ["True", "False"] as options. Capitalize the options.`,
+    mixed: `Create ${numQuestions} questions using a balanced mix of multiple-choice and true/false options.`,
+  };
+
+  const strictTypeConstraint =
+    questionType !== "mixed"
+      ? `Only generate questions of type "${questionType}". Do NOT include any other types.`
+      : `Use a varied mix of question types.`;
+
+  return `You are generating a quiz in JSON format based on the following input text:    
+
+    "${textInput}"
+    
+    Requirements:
+    - Number of questions: ${numQuestions}
+    - Question type: ${questionType}
+    - ${typeInstructions[questionType as keyof typeof typeInstructions]}
+    - ${strictTypeConstraint}
+    - Output valid JSON only, no additional text. It MUST be parseable as JSON.
+    - Follow this exact structure:
+
+    Structure:
+    {
+      "cover": {
+        "title": "A clear, engaging quiz title. Do not use words like 'Quiz','Test', or similar",
+        "description": "A 1-2 sentence overview of the quiz topic",
+        "estTime": "Estimated time to complete, e.g. '5 minutes'"
+      },
+      "questions": [...]
+    }
+
+    Example question structure:
+    ${template}
+
+    Rules:
+    - hints: max 15 words, subtle clues only
+    - explanations: max 50 words, don't quote source text
+    - mcq: 4 options, 1 correct
+    - t/f: use ["True", "False"] for options
+    - Vary difficulty levels across questions`;
 };
 
 const validateJsonFormat = (jsonString: string) => {
   try {
     return {
       validJson: true,
-      quiz: JSON.parse(jsonString)
+      quiz: JSON.parse(jsonString),
     };
   } catch (error: any) {
     return {
       validJson: false,
-      error: `Invalid JSON format: ${error.message}`
-    }
+      error: `Invalid JSON format: ${error.message}`,
+    };
   }
-}
+};
 
-const feedbackPrompt = (wrongQuestions: Array<JSONObject>, rightQuestions: Array<JSONObject>) => {
-  let wrongQuestionsText =
-    wrongQuestions.length > 0
-      ? `The user got the following questions wrong: ${wrongQuestions}.`
-      : '';
+const feedbackPrompt = (
+  correctQuestions: string[],
+  wrongQuestions: string[],
+): string => {
+  const correctCount = correctQuestions.length;
+  const wrongCount = wrongQuestions.length;
+  const totalQuestions = correctCount + wrongCount;
 
-  let rightQuestionsText =
-    rightQuestions.length > 0
-      ? `They answered these questions correctly: ${rightQuestions}.`
-      : '';
+  const prompt = `
+    You are an educational assistant providing feedback on a quiz attempt. Please provide feedback in the following JSON format. Your response MUST be parseable as JSON:
 
-  return `Based on the user's quiz attempts:
-  
-  ${wrongQuestionsText} ${rightQuestionsText}
+    {
+      "feedback": "string",
+      "review": "string",
+    }
 
-  Please provide feedback on their performance in approximately 100 words. Highlight their strengths and areas for improvement.
+    **Quiz Results:**
+    - Total Questions: ${totalQuestions}
+    - Correct Answers: ${correctCount}
+    - Wrong Answers: ${wrongCount}
 
-  - Mention specific areas where they excelled and where they need to focus more.
-  - Provide encouragement and positive reinforcement based on their performance.
-  - Use the following grading criteria to guide your feedback without explicitly mentioning it:
-    - Outstanding: 95% or higher
-    - Excellent: 85% to 94%
-    - Good: 75% to 84%
-    - Average: 65% to 74%
-    - Below Average: 50% to 64%
-    - Work Hard: Below 50%
+    **Questions Answered Correctly:**
+    ${correctCount > 0 ? correctQuestions.map((q, i) => `${i + 1}. ${q}`).join("\n") : "None"}
 
-  Avoid directly referencing these criteria in your feedback, but ensure your comments reflect their performance level.
-  `;
+    **Questions Answered Incorrectly:**
+    ${wrongCount > 0 ? wrongQuestions.map((q, i) => `${i + 1}. ${q}`).join("\n") : "None"}
+
+    **Instructions:**
+    1. **Feedback**: Based on the score (${correctCount}/${totalQuestions}), provide constructive but encouraging feedback.Be specific about their performance level and motivating for improvement.
+    2. **Review**: Suggest 2-3 specific topics to review based primarily on the questions they got wrong. If there are no wrong answers, suggest moving to more advanced topics related to the subject matter. Make these actionable and specific to the content areas shown in the questions.
+
+    Respond only with the JSON object, no additional text. No string with JSON shape.`.trim();
+
+  return prompt;
 };
 
 export { quizPrompt, validateJsonFormat, feedbackPrompt };

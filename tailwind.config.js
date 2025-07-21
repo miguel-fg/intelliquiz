@@ -64,7 +64,7 @@ module.exports = {
         iqGreen: "#3CA277",
         iqLightGreen: "#97D8BD",
         iqBlue: "#20639B",
-        iqLightBlue: "#99C6EA"      
+        iqLightBlue: "#99C6EA",
       },
       fontSize: {
         header: ["2rem"],
@@ -75,11 +75,11 @@ module.exports = {
         "body-mb": ["0.75rem"],
       },
       borderWidth: {
-        3: "3px"
-      }
+        3: "3px",
+      },
     },
   },
   plugins: [
-    require("tailwindcss-inner-border")
+    //  require("tailwindcss-inner-border")
   ],
 };

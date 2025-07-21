@@ -1,33 +1,133 @@
-@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Oswald:wght@200..700&display=swap");
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&display=swap");
+@import "tailwindcss";
 
-@layer base {
-    html {
-        @apply bg-magnolia
-    }
+:root {
+  background-color: var(--color-primary-100);
 }
 
-input[type=file]::-webkit-file-upload-button,
-input[type=file]::file-selector-button {
-    @apply text-seasalt bg-amethyst rounded-md py-1 border-none text-button-mb lg:text-button w-32 lg:w-150 font-oswald cursor-pointer;
+@theme {
+  --color-primary-100: #f4f0f8;
+  --color-primary-200: #ded2ea;
+  --color-primary-300: #c8b4dd;
+  --color-primary-400: #ac8ecb;
+  --color-primary-500: #9068ba;
+  --color-primary-600: #6c4e8c;
+  --color-primary-700: #4f3966;
+  --color-primary-800: #2b1f38;
+  --color-primary-900: #0e0a13;
+
+  --color-grayscale-100: #f4f4f4;
+  --color-grayscale-200: #dedddf;
+  --color-grayscale-300: #c8c7c9;
+  --color-grayscale-400: #adabae;
+  --color-grayscale-500: #918f93;
+  --color-grayscale-600: #6d6b6e;
+  --color-grayscale-700: #49484a;
+  --color-grayscale-800: #2c2b2c;
+  --color-grayscale-900: #0e0e0f;
+
+  --color-success-100: #ecf6f1;
+  --color-success-200: #c5e3d6;
+  --color-success-300: #9ed1bb;
+  --color-success-400: #6db999;
+  --color-success-500: #3ca277;
+  --color-success-600: #2d7a59;
+  --color-success-700: #1e513c;
+  --color-success-800: #123124;
+  --color-success-900: #06100c;
+
+  --color-error-100: #fdeeeb;
+  --color-error-200: #faccc4;
+  --color-error-300: #f6aa9d;
+  --color-error-400: #f2806c;
+  --color-error-500: #ed553b;
+  --color-error-600: #b2402c;
+  --color-error-700: #772b1e;
+  --color-error-800: #471a12;
+  --color-error-900: #180806;
+
+  --color-warning-100: #fef7e9;
+  --color-warning-200: #fce7bd;
+  --color-warning-300: #fbd891;
+  --color-warning-400: #f8c45a;
+  --color-warning-500: #f6b023;
+  --color-warning-600: #b9841a;
+  --color-warning-700: #7b5812;
+  --color-warning-800: #4a350b;
+  --color-warning-900: #191203;
+
+  --color-info-100: #e9eff5;
+  --color-info-200: #bcd0e1;
+  --color-info-300: #90b1cd;
+  --color-info-400: #588ab4;
+  --color-info-500: #20639b;
+  --color-info-600: #184a74;
+  --color-info-700: #10324e;
+  --color-info-800: #0a1e2f;
+  --color-info-900: #030a0f;
+
+  --font-oswald: "Oswald", "sans-serif";
+  --font-open-sans: "Open Sans", "sans-serif";
+}
+
+@layer components {
+  .title-font {
+    font-family: var(--font-oswald);
+    font-weight: 400;
+    font-size: 3rem;
+  }
+
+  .heading-font {
+    font-family: var(--font-oswald);
+    font-weight: 400;
+    font-size: 1.5rem;
+  }
+
+  .button-font {
+    font-family: var(--font-oswald);
+    font-weight: 400;
+    font-size: 1rem;
+  }
+
+  .body-font {
+    font-family: var(--font-open-sans);
+    font-weight: 400;
+    font-size: 1rem;
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
 }
 
 @keyframes fade-in-out {
-    0% {
-        opacity: 0;
-    }
+  0% {
+    opacity: 0;
+  }
 
-    50% {
-        opacity: 1;
-    }
+  50% {
+    opacity: 1;
+  }
 
-    100% {
-        opacity: 0;
-    }
+  100% {
+    opacity: 0;
+  }
 }
 
 .animate-fade-in-out {
-    animation: fade-in-out 2s ease-in-out infinite
+  animation: fade-in-out 2s ease-in-out infinite;
 }
