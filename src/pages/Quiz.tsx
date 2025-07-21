@@ -2,20 +2,21 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuiz } from "../context/QuizContext";
 import QuizCover from "../components/QuizCover";
 import ButtonInput from "../components/inputs/ButtonInput";
-import { useEffect, useState } from "react";
+import { useEffect, useState, KeyboardEvent, useRef } from "react";
 import { saveAnswersToStorage } from "../scripts/localStorage";
 import { downloadQuiz } from "../scripts/pdfHelper";
 
 const Quiz = () => {
   const navigate = useNavigate();
   const params = useParams();
+  const questionHeaderRef = useRef<HTMLHeadingElement>(null);
   const { quiz, clear, answers, setAnswers } = useQuiz();
 
   const [started, setStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [showExitConfirmation, setShowExitConfirmation] = useState(false);
-  const [downloadingQuiz, setDownloadingQuiz] = useState(false);
+  const [_downloadingQuiz, setDownloadingQuiz] = useState(false);
 
   useEffect(() => {
     if (!params.quizId || !quiz || quiz === "loading" || quiz === "error") {
@@ -44,6 +45,14 @@ const Quiz = () => {
     navigate(`/score/${quiz.id}`);
   };
 
+  const handleKeyUp = (e: KeyboardEvent, option: string) => {
+    e.preventDefault();
+
+    if (e.key === "Enter" || e.key === " ") {
+      handleChange(option);
+    }
+  };
+
   const handleQuizDownload = async () => {
     setDownloadingQuiz(true);
 
@@ -55,6 +64,12 @@ const Quiz = () => {
       setDownloadingQuiz(false);
     }
   };
+
+  useEffect(() => {
+    if (!started) return;
+
+    questionHeaderRef.current?.focus({ preventScroll: true });
+  }, [started, currentIndex]);
 
   return (
     <div className="flex justify-center w-full @container">
@@ -96,7 +111,11 @@ const Quiz = () => {
           />
         ) : (
           <div>
-            <h1 className="heading-font text-grayscale-900 mb-2">
+            <h1
+              className="heading-font text-grayscale-900 mb-2 focus:outline-none"
+              ref={questionHeaderRef}
+              tabIndex={-1}
+            >
               Question {currentIndex + 1}
             </h1>
             <p className="body-font text-grayscale-900 mb-5">
@@ -116,6 +135,8 @@ const Quiz = () => {
                 {currentQuestion.options?.map((option, i) => (
                   <label
                     key={i}
+                    tabIndex={0}
+                    onKeyUp={(e) => handleKeyUp(e, option)}
                     className={`flex items-center justify-center py-5 md:py-8 cursor-pointer select-none rounded-lg border-2 ${answers[currentIndex] === option ? "border-primary-500 bg-primary-200" : "border-grayscale-300 hover:bg-grayscale-200 hover:border-grayscale-400"}`}
                   >
                     <input
@@ -123,6 +144,7 @@ const Quiz = () => {
                       className="sr-only"
                       name={`question-${currentIndex}`}
                       value={option}
+                      tabIndex={-1}
                       checked={answers[currentIndex] === option}
                       onChange={() => handleChange(option)}
                     />

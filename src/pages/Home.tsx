@@ -28,7 +28,7 @@ function Home() {
     { label: "Mixed", value: "mixed" },
   ];
 
-  const { quiz, setQuiz } = useQuiz();
+  const { quiz, setQuiz, setDefault } = useQuiz();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -110,22 +110,25 @@ function Home() {
         <h1 className="heading-font text-grayscale-900 mb-2">
           Generate quiz from...
         </h1>
-        <div className="flex items-center justify-around body-font text-grayscale-900 mb-6">
-          <RadioInput
-            name="input-mode"
-            value="text"
-            label="Text Input"
-            checked={inputMode === "text"}
-            onChange={(v) => setInputMode(v as "text" | "file")}
-          />
-          <RadioInput
-            name="input-mode"
-            value="file"
-            label="File Upload"
-            checked={inputMode === "file"}
-            onChange={(v) => setInputMode(v as "text" | "file")}
-          />
-        </div>
+        <fieldset className="mb-6" aria-label="Input Mode">
+          <legend className="sr-only">Choose Input Mode</legend>
+          <div className="flex items-center justify-around body-font text-grayscale-900">
+            <RadioInput
+              name="input-mode"
+              value="text"
+              label="Text Input"
+              checked={inputMode === "text"}
+              onChange={(v) => setInputMode(v as "text" | "file")}
+            />
+            <RadioInput
+              name="input-mode"
+              value="file"
+              label="File Upload"
+              checked={inputMode === "file"}
+              onChange={(v) => setInputMode(v as "text" | "file")}
+            />
+          </div>
+        </fieldset>
         <div className="body-font text-grayscale-700">
           <h2 className="font-oswald text-lg text-grayscale-900 mb-1">
             {inputMode === "text"
@@ -200,7 +203,7 @@ function Home() {
         </div>
         <div className="flex justify-center sm:grid sm:grid-cols-3 w-full mt-6">
           <ButtonInput
-            onClick={generateQuiz}
+            onClick={setDefault}
             className={`col-span-1 col-start-2 w-full ${isGenDisabled ? "opacity-50 pointer-events-none" : ""}`}
           >
             Generate Quiz

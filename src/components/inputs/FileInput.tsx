@@ -40,6 +40,14 @@ const FileInput: FC<Props> = ({
     }
   };
 
+  const handleKeyUp = (e: React.KeyboardEvent) => {
+    e.preventDefault();
+
+    if (e.key === "Enter" || e.key === " ") {
+      fileInputRef.current?.click();
+    }
+  };
+
   return (
     <div
       onDragOver={(e) => {
@@ -65,6 +73,8 @@ const FileInput: FC<Props> = ({
         <span
           className="cursor-pointer text-info-400 underline"
           onClick={() => fileInputRef.current?.click()}
+          tabIndex={0}
+          onKeyUp={handleKeyUp}
         >
           browse
         </span>

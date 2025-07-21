@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, KeyboardEvent } from "react";
 
 interface Props {
   value: string;
@@ -9,11 +9,28 @@ interface Props {
 }
 
 const RadioInput: FC<Props> = ({ value, name, checked, onChange, label }) => {
+  const id = `${name}-${value}`;
+
+  const handleKeyUp = (event: KeyboardEvent) => {
+    event.preventDefault();
+
+    if (event.key === "Enter" || event.key === " ") {
+      onChange(value);
+    }
+  };
+
   return (
-    <label className="flex items-center gap-2 cursor-pointer select-none">
+    <label
+      htmlFor={id}
+      className="flex items-center gap-2 cursor-pointer select-none focus:outline-none focus:ring-2 ring-primary-500 p-2 rounded"
+      tabIndex={0}
+      onKeyUp={handleKeyUp}
+    >
       <input
+        id={id}
         type="radio"
         className="sr-only"
+        tabIndex={-1}
         name={name}
         value={value}
         checked={checked}
