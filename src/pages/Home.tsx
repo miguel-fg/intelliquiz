@@ -28,7 +28,7 @@ function Home() {
     { label: "Mixed", value: "mixed" },
   ];
 
-  const { quiz, setQuiz, setDefault } = useQuiz();
+  const { quiz, setQuiz } = useQuiz();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -203,7 +203,7 @@ function Home() {
         </div>
         <div className="flex justify-center sm:grid sm:grid-cols-3 w-full mt-6">
           <ButtonInput
-            onClick={setDefault}
+            onClick={generateQuiz}
             className={`col-span-1 col-start-2 w-full ${isGenDisabled ? "opacity-50 pointer-events-none" : ""}`}
           >
             Generate Quiz
