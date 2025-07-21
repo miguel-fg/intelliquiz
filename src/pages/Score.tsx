@@ -10,6 +10,7 @@ import ButtonInput from "../components/inputs/ButtonInput";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { QuizQuestion } from "../types/quiz";
 import api from "../scripts/axiosInstance";
+import { downloadQuizResults } from "../scripts/pdfHelper";
 
 const Score = () => {
   const { quiz, answers, setAnswers, clear } = useQuiz();
@@ -20,6 +21,7 @@ const Score = () => {
     feedback: string;
     review: string;
   } | null>(null);
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
 
   const navigate = useNavigate();
 
@@ -73,6 +75,18 @@ const Score = () => {
     } catch (error) {}
   };
 
+  const handleDownloadResultsPDF = async () => {
+    setDownloadingPDF(true);
+
+    try {
+      await downloadQuizResults(quiz, answers, correctAnswers, aiFeedback);
+    } catch (error) {
+      console.error("Error downloading PDF: ", error);
+    } finally {
+      setDownloadingPDF(false);
+    }
+  };
+
   useEffect(() => {
     if (Object.keys(answers).length === 0) {
       const storedAnswers = loadAnswersFromStorage();
@@ -123,6 +137,12 @@ const Score = () => {
               >
                 {answers[i]}
               </p>
+              {q.answer !== answers[i] && (
+                <p className="body-font mt-2">
+                  <span className="font-bold">Correct answer: </span>
+                  {q.answer}
+                </p>
+              )}
             </div>
           ))}
         </div>
@@ -137,11 +157,11 @@ const Score = () => {
             Exit
           </ButtonInput>
           <ButtonInput
-            onClick={() => {}}
+            onClick={handleDownloadResultsPDF}
             variant="primary"
-            className="col-start-3 lg:col-start-4"
+            className={`col-start-3 lg:col-start-4 ${downloadingPDF ? "opacity-50" : ""}`}
           >
-            Download results
+            {downloadingPDF ? "Generating..." : "Download results"}
           </ButtonInput>
         </div>
       </div>{" "}
