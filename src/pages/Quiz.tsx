@@ -4,6 +4,7 @@ import QuizCover from "../components/QuizCover";
 import ButtonInput from "../components/inputs/ButtonInput";
 import { useEffect, useState } from "react";
 import { saveAnswersToStorage } from "../scripts/localStorage";
+import { downloadQuiz } from "../scripts/pdfHelper";
 
 const Quiz = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Quiz = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [showExitConfirmation, setShowExitConfirmation] = useState(false);
+  const [downloadingQuiz, setDownloadingQuiz] = useState(false);
 
   useEffect(() => {
     if (!params.quizId || !quiz || quiz === "loading" || quiz === "error") {
@@ -40,6 +42,18 @@ const Quiz = () => {
   const handleSubmit = () => {
     saveAnswersToStorage(answers);
     navigate(`/score/${quiz.id}`);
+  };
+
+  const handleQuizDownload = async () => {
+    setDownloadingQuiz(true);
+
+    try {
+      await downloadQuiz(quiz);
+    } catch (error) {
+      console.error("Error downloading PDF: ", error);
+    } finally {
+      setDownloadingQuiz(false);
+    }
   };
 
   return (
@@ -77,6 +91,7 @@ const Quiz = () => {
           <QuizCover
             cover={quiz.cover}
             onStart={() => setStarted(true)}
+            onDownload={handleQuizDownload}
             onExit={() => setShowExitConfirmation(true)}
           />
         ) : (

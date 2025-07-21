@@ -2,7 +2,13 @@ import { FC, ReactNode } from "react";
 import clsx from "clsx";
 
 interface Props {
-  variant?: "primary" | "secondary" | "cancel" | "danger" | "success";
+  variant?:
+    | "primary"
+    | "outline"
+    | "secondary"
+    | "cancel"
+    | "danger"
+    | "success";
   className?: string;
   disabled?: boolean;
   children: ReactNode;
@@ -20,6 +26,8 @@ const ButtonInput: FC<Props> = ({
   const variantClasses: Record<NonNullable<Props["variant"]>, string> = {
     primary:
       "bg-primary-500 text-grayscale-100 hover:bg-primary-600 active:bg-primary-700",
+    outline:
+      "bg-white border-2 border-primary-500 text-primary-600 hover:bg-grayscale-100 active:bg-grayscale-200 active:border-primary-700 active:text-primary-700",
     secondary:
       "bg-grayscale-400 text-grayscale-900 hover:bg-grayscale-500 active:bg-grayscale-600 active:text-grayscale-200",
     danger:

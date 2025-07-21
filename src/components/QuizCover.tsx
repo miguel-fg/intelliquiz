@@ -8,13 +8,20 @@ interface Cover {
   numQuestions: number;
   typeQuestions: string;
 }
+
 interface Props {
   cover: Cover;
   onStart: () => void;
+  onDownload: () => void;
   onExit: () => void;
 }
 
-export const QuizCover: FC<Props> = ({ cover, onStart, onExit }) => {
+export const QuizCover: FC<Props> = ({
+  cover,
+  onStart,
+  onDownload,
+  onExit,
+}) => {
   const questionTypes = {
     mcq: "Multiple Choice",
     "t/f": "True or False",
@@ -40,7 +47,7 @@ export const QuizCover: FC<Props> = ({ cover, onStart, onExit }) => {
           {cover.estTime}
         </p>
       </div>{" "}
-      <div className="grid grid-cols-3 lg:grid-cols-4 w-full mt-4 md:mt-8">
+      <div className="grid grid-cols-3 lg:grid-cols-4 w-full mt-4 md:mt-8 gap-y-4">
         <ButtonInput onClick={onExit} variant="danger">
           Exit
         </ButtonInput>
@@ -50,6 +57,13 @@ export const QuizCover: FC<Props> = ({ cover, onStart, onExit }) => {
           className="col-start-3 lg:col-start-4"
         >
           Start quiz
+        </ButtonInput>
+        <ButtonInput
+          onClick={onDownload}
+          variant="outline"
+          className="col-start-3 lg:col-start-4"
+        >
+          Download as PDF
         </ButtonInput>
       </div>{" "}
     </>
